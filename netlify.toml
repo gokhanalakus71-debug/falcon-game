@@ -1,4 +1,4 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; script-src 'self' https: 'unsafe-inline' 'unsafe-eval';"
+    Content-Security-Policy = "script-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; object-src 'none'; base-uri 'self';"
