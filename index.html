@@ -243,6 +243,53 @@ let game = {
   }
 };
 
+const assetCache = new Map();
+
+const birdImageCache = {};
+
+async function getAsset(type, key){
+
+  console.log("STEP 1 getAsset:", type, key);
+
+  const cacheKey = `${type}-${key}`;
+
+  if(assetCache.has(cacheKey)){
+    return assetCache.get(cacheKey);
+  }
+
+  const prompt = buildUAEPrompt(type, key);
+
+  console.log("STEP 2 generateImage start");
+
+  const url = await generateImage(prompt);
+  console.log("STEP 3 generateImage result:", url);
+
+  const img = new Image();
+  img.src = url;
+
+  assetCache.set(cacheKey, img);
+
+  return img;
+}
+
+async function getBirdImage(rarity){
+
+  if(birdImageCache[rarity]){
+    return birdImageCache[rarity];
+  }
+
+  let birdKey =
+    rarity === "Legendary" ? "legendary" :
+    rarity === "Rare" ? "rare" :
+    "common";
+
+  const img = await getAsset("birds", birdKey);
+
+  birdImageCache[rarity] = img;
+
+  return img;
+}
+
 // ================= WEATHER SYSTEM =================
 
 const weatherTypes = [
@@ -343,55 +390,6 @@ function flashScreen(color){
   setTimeout(()=>{
     div.remove();
   }, 150);
-
-  // ================= ASSET CACHE SYSTEM =================
-
-const assetCache = new Map();
-
-const birdImageCache = {};
-
-async function getAsset(type, key){
-
-  console.log("STEP 1 getAsset:", type, key);
-
-  const cacheKey = `${type}-${key}`;
-
-  if(assetCache.has(cacheKey)){
-    return assetCache.get(cacheKey);
-  }
-
-  const prompt = buildUAEPrompt(type, key);
-
-  console.log("STEP 2 generateImage start");
-
-  const url = await generateImage(prompt);
-  console.log("STEP 3 generateImage result:", url);
-
-  const img = new Image();
-  img.src = url;
-
-  assetCache.set(cacheKey, img);
-
-  return img;
-}
-
-async function getBirdImage(rarity){
-
-  if(birdImageCache[rarity]){
-    return birdImageCache[rarity];
-  }
-
-  let birdKey =
-    rarity === "Legendary" ? "legendary" :
-    rarity === "Rare" ? "rare" :
-    "common";
-
-  const img = await getAsset("birds", birdKey);
-
-  birdImageCache[rarity] = img;
-
-  return img;
-}
 }
 
 async function generateImage(prompt){
@@ -1490,7 +1488,7 @@ async function updateWorld(){
 function render(){
 
   updateWorld();
-  
+
   let app = document.getElementById("ui");
   if(!app) return;
 
