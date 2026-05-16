@@ -1,0 +1,5 @@
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://falcon-game.onrender.com; img-src 'self' data: https:; connect-src 'self' https://falcon-game.onrender.com;"
+    
