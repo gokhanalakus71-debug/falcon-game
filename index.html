@@ -1479,9 +1479,10 @@ async function updateWorld(){
   }
 }
   
-  // 4. LOOP (ONLY ONCE HERE)
+  function loop(){
   updateWorld();
-
+  requestAnimationFrame(loop);
+}
   requestAnimationFrame(updateWorld);
 }
 
