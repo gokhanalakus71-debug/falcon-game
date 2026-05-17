@@ -430,30 +430,27 @@ async function generateImage(prompt){
   }
 }
 
-function buildUAEPrompt(type, variant) {
+function buildUAEPrompt(type, variant){
 
-  const base =
-    "GAME ASSET ONLY, consistent style, same world, same lighting, no artistic variation, 2D game sprite style, sharp edges, stable design";
+  const base = "clean game asset, flat stylized 2D sprite, simple shapes, high contrast, no realism, no cinematic rendering";
 
-  if (type === "background") {
+  if(type === "background"){
 
     return {
-      sunny: `${base}, BACKGROUND: UAE desert valley, fixed camera, golden sky, no variation`,
-      storm: `${base}, BACKGROUND: desert storm, dark sky, same map layout, cinematic but stable`,
-      foggy: `${base}, BACKGROUND: desert fog, low visibility, same terrain layout`
+      sunny: `${base}, desert background, clear sky, minimal dunes, game environment`,
+      storm: `${base}, desert storm background, sand clouds, low visibility`,
+      foggy: `${base}, misty desert background, soft haze, low detail`
     }[variant];
   }
 
-  if (type === "bird") {
+  if(type === "bird"){
 
     return {
-      common: `${base}, FALCON SPRITE: brown Arabian falcon, side view, consistent character design`,
-      rare: `${base}, FALCON SPRITE: blue-gold falcon, glowing accents, same body shape always`,
-      legendary: `${base}, FALCON SPRITE: golden mythic falcon, armored feathers, identical silhouette always`
+      common: `${base}, simple falcon sprite, brown gold bird, side view`,
+      rare: `${base}, glowing falcon sprite, blue gold highlights, slightly magical`,
+      legendary: `${base}, golden mythic falcon sprite, aura effect, centered`
     }[variant];
   }
-
-  return `${base}, generic game asset`;
 }
 
 function go(newScene){
