@@ -406,6 +406,8 @@ const API_BASE = "https://falcon-backend-czg9.onrender.com";
 
 async function generateImage(prompt){
   try {
+    const url = await generateImage(prompt + ", NOT artistic, NOT realistic variation, game asset sprite");
+    
     const res = await fetch(`${API_BASE}/api/image`, {
       method: "POST",
       headers: {
