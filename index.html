@@ -247,33 +247,20 @@ const assetCache = new Map();
 
 const birdImageCache = {};
 
-async function getAsset(type, key){
-
+async function getAsset(type, key) {
   console.log("STEP 1 getAsset:", type, key);
 
   const cacheKey = `${type}-${key}`;
 
-  if(assetCache.has(cacheKey)){
+  if (assetCache.has(cacheKey)) {
     return assetCache.get(cacheKey);
   }
 
   const prompt = buildUAEPrompt(type, key);
-
   console.log("STEP 2 generateImage start");
 
   const url = await generateImage(prompt);
-  console.log("STEP 3 generateImage result:", url);
-
-  async function getAsset(type, key){
-
-  const cacheKey = `${type}-${key}`;
-
-  if(assetCache.has(cacheKey)){
-    return assetCache.get(cacheKey);
-  }
-
-  const prompt = buildUAEPrompt(type, key);
-  const url = await generateImage(prompt);
+  console.log("STEP 3 URL:", url);
 
   const img = new Image();
   img.crossOrigin = "anonymous";
@@ -287,12 +274,11 @@ async function getAsset(type, key){
 
     img.onerror = () => {
       console.log("Image failed:", url);
-      resolve(); // NEVER block game
+      resolve(); // never crash game
     };
   });
 
   assetCache.set(cacheKey, img);
-
   return img;
 }
 
