@@ -265,7 +265,16 @@ async function getAsset(type, key){
   console.log("STEP 3 generateImage result:", url);
 
   const img = new Image();
-  img.src = url;
+
+img.onload = () => {
+  console.log("Image loaded:", url);
+};
+
+img.onerror = () => {
+  console.log("Image failed:", url);
+};
+
+img.src = url;
 
   assetCache.set(cacheKey, img);
 
