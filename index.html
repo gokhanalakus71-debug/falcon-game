@@ -252,14 +252,9 @@ async function getAsset(type, key) {
 
   const cacheKey = `${type}-${key}`;
 
-  if(assetCache.has(cacheKey)){
-  const cached = assetCache.get(cacheKey);
-
-  // validate image still loads
-  if(cached && cached.complete && cached.naturalWidth > 0){
-    return cached;
+  if (assetCache.has(cacheKey)) {
+    return assetCache.get(cacheKey);
   }
-}
 
   const prompt = buildUAEPrompt(type, key);
   console.log("STEP 2 generateImage start");
@@ -411,12 +406,16 @@ const API_BASE = "https://falcon-backend-czg9.onrender.com";
 
 async function generateImage(prompt){
   try {
+
     const res = await fetch(`${API_BASE}/api/image`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ prompt: "game asset, " + prompt + ", clean sprite, no realism"})
+
+      body: JSON.stringify({
+        prompt: "game asset, clean stylized 2D sprite, UAE inspired desert fantasy design, no realism, no cinematic, " + prompt
+      })
     });
 
     const data = await res.json();
@@ -429,8 +428,6 @@ async function generateImage(prompt){
 
   } catch (err) {
     console.log("Image fetch failed:", err);
-
-    // fallback ONLY
     return "https://via.placeholder.com/150";
   }
 }
