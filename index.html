@@ -430,28 +430,30 @@ async function generateImage(prompt){
   }
 }
 
-function buildUAEPrompt(type, variant){
+function buildUAEPrompt(type, variant) {
 
   const base =
-  "UAE futuristic desert falcon universe, golden cinematic luxury style, Dubai skyline, Islamic geometric aesthetics, ultra detailed game art, dramatic lighting, 4k, high realism";
+    "GAME ASSET ONLY, consistent style, same world, same lighting, no artistic variation, 2D game sprite style, sharp edges, stable design";
 
-  if(type === "background"){
+  if (type === "background") {
 
     return {
-      sunny: `${base}, sunrise over UAE desert, golden dunes, falcons flying, peaceful atmosphere`,
-      storm: `${base}, sandstorm in desert, dramatic clouds, dark cinematic tone, intense wind`,
-      foggy: `${base}, mystical desert fog oasis, soft light, mysterious atmosphere`
+      sunny: `${base}, BACKGROUND: UAE desert valley, fixed camera, golden sky, no variation`,
+      storm: `${base}, BACKGROUND: desert storm, dark sky, same map layout, cinematic but stable`,
+      foggy: `${base}, BACKGROUND: desert fog, low visibility, same terrain layout`
     }[variant];
   }
 
-  if(type === "bird"){
+  if (type === "bird") {
 
     return {
-      common: `${base}, simple Arabian falcon, natural brown gold feathers`,
-      rare: `${base}, enhanced falcon, glowing blue-gold feathers, energy aura`,
-      legendary: `${base}, mythic royal falcon, glowing golden armor feathers, divine aura, cinematic hero shot`
+      common: `${base}, FALCON SPRITE: brown Arabian falcon, side view, consistent character design`,
+      rare: `${base}, FALCON SPRITE: blue-gold falcon, glowing accents, same body shape always`,
+      legendary: `${base}, FALCON SPRITE: golden mythic falcon, armored feathers, identical silhouette always`
     }[variant];
   }
+
+  return `${base}, generic game asset`;
 }
 
 function go(newScene){
