@@ -394,7 +394,7 @@ function flashScreen(color){
 
 async function generateImage(prompt){
 
-  const res = await fetch("https://falcon-api.onrender.com/api/image", {
+  const res = await fetch("http://localhost:3000/api/image", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -1478,17 +1478,10 @@ async function updateWorld(){
     ctx.shadowBlur = 0;
   }
 }
-  
-  function loop(){
-  updateWorld();
-  requestAnimationFrame(loop);
-}
-  requestAnimationFrame(updateWorld);
+
 }
 
 function render(){
-
-  updateWorld();
 
   let app = document.getElementById("ui");
   if(!app) return;
@@ -1514,6 +1507,13 @@ function render(){
 // ================= START =================
 
 render();
+
+function loop(){
+  updateWorld();
+  requestAnimationFrame(loop);
+}
+
+loop();
 
 window.addEventListener("error", (e)=>{
   console.log("Game Error:", e.message);
