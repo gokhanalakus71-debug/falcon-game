@@ -252,9 +252,14 @@ async function getAsset(type, key) {
 
   const cacheKey = `${type}-${key}`;
 
-  if (assetCache.has(cacheKey)) {
-    return assetCache.get(cacheKey);
+  if(assetCache.has(cacheKey)){
+  const cached = assetCache.get(cacheKey);
+
+  // validate image still loads
+  if(cached && cached.complete && cached.naturalWidth > 0){
+    return cached;
   }
+}
 
   const prompt = buildUAEPrompt(type, key);
   console.log("STEP 2 generateImage start");
