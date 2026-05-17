@@ -434,23 +434,25 @@ async function generateImage(prompt){
 
 function buildUAEPrompt(type, variant){
 
-  const base = "clean game asset, flat stylized 2D sprite, simple shapes, high contrast, no realism, no cinematic rendering";
+  const base =
+    "clean stylized 2D game asset, flat vector style, inspired by Arabian / UAE desert art, falcon culture, geometric patterns, no realism";
 
   if(type === "background"){
 
     return {
-      sunny: `${base}, desert background, clear sky, minimal dunes, game environment`,
-      storm: `${base}, desert storm background, sand clouds, low visibility`,
-      foggy: `${base}, misty desert background, soft haze, low detail`
+      sunny: `${base}, desert dunes, golden sunrise, minimal sky`,
+      storm: `${base}, desert sandstorm, dramatic wind`,
+      foggy: `${base}, soft haze over desert, muted tones`
     }[variant];
+
   }
 
   if(type === "bird"){
 
     return {
-      common: `${base}, simple falcon sprite, brown gold bird, side view`,
-      rare: `${base}, glowing falcon sprite, blue gold highlights, slightly magical`,
-      legendary: `${base}, golden mythic falcon sprite, aura effect, centered`
+      common: `${base}, simple falcon sprite, brown and gold`,
+      rare: `${base}, glowing falcon, blue-gold accents`,
+      legendary: `${base}, mythic golden falcon, aura, royal UAE symbolism`
     }[variant];
   }
 }
