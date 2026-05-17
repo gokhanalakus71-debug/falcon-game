@@ -411,7 +411,7 @@ async function generateImage(prompt){
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({ prompt: "game asset, " + prompt + ", clean sprite, no realism"})
     });
 
     const data = await res.json();
