@@ -264,20 +264,32 @@ async function getAsset(type, key){
   const url = await generateImage(prompt);
   console.log("STEP 3 generateImage result:", url);
 
+  async function getAsset(type, key){
+
+  const cacheKey = `${type}-${key}`;
+
+  if(assetCache.has(cacheKey)){
+    return assetCache.get(cacheKey);
+  }
+
+  const prompt = buildUAEPrompt(type, key);
+  const url = await generateImage(prompt);
+
   const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = url;
 
-// IMPORTANT: prevents canvas taint + improves stability
-img.crossOrigin = "anonymous";
+  await new Promise((resolve) => {
+    img.onload = () => {
+      console.log("Image loaded:", url);
+      resolve();
+    };
 
-img.onload = () => {
-  console.log("Image loaded:", url);
-};
-
-img.onerror = () => {
-  console.log("Image failed:", url);
-};
-
-img.src = url;
+    img.onerror = () => {
+      console.log("Image failed:", url);
+      resolve(); // NEVER block game
+    };
+  });
 
   assetCache.set(cacheKey, img);
 
