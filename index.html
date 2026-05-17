@@ -1508,9 +1508,16 @@ function render(){
 
 render();
 
+let running = false;
+
 function loop(){
-  updateWorld();
-  requestAnimationFrame(loop);
+  if(running) return;
+  running = true;
+
+  updateWorld().finally(() => {
+    running = false;
+    requestAnimationFrame(loop);
+  });
 }
 
 loop();
