@@ -266,6 +266,9 @@ async function getAsset(type, key){
 
   const img = new Image();
 
+// IMPORTANT: prevents canvas taint + improves stability
+img.crossOrigin = "anonymous";
+
 img.onload = () => {
   console.log("Image loaded:", url);
 };
