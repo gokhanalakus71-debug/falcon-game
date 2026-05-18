@@ -1645,7 +1645,9 @@ function loop(){
 
   updateWorld().finally(() => {
     running = false;
-    requestAnimationFrame(loop);
+    setTimeout(() => {
+  requestAnimationFrame(loop);
+}, 1000 / 30);
   });
 }
 
