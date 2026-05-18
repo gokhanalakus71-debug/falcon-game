@@ -253,7 +253,9 @@ let birdImg = null;
 async function getFalconSpriteSheet(){
 
   if(birdImageCache.spriteSheet){
-    return birdImageCache.spriteSheet;
+    return birdImageCache.spriteSheet = img;
+birdImg = img; // ✅ GLOBAL FIX
+return img;
   }
 
   const prompt =
