@@ -1516,6 +1516,28 @@ async function updateWorld(){
     }
   }
 
+// ================= PARTICLES =================
+
+for(let i=0;i<25;i++){
+
+  ctx.beginPath();
+
+  const x =
+    (Date.now()*0.02 + i*80)
+    % canvas.width;
+
+  const y =
+    (i * 50 + Date.now()*0.01)
+    % canvas.height;
+
+  ctx.arc(x, y, 2, 0, Math.PI*2);
+
+  ctx.fillStyle =
+    "rgba(255,215,0,0.15)";
+
+  ctx.fill();
+}
+
   // 4. UPDATE + DRAW BIRDS
   for(const b of game.birds){
 
