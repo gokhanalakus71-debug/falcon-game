@@ -1606,7 +1606,13 @@ for(let i=0;i<25;i++){
 }
 
   // 4. UPDATE + DRAW BIRDS
-  for(const b of game.birds){
+
+// STEP 3 FIX: prevent crash if sprite not ready
+if (!birdImg || !birdImg.complete || !birdImg.naturalWidth) {
+  console.log("Bird sprite not ready yet, skipping bird rendering");
+} else {
+
+  for (const b of game.birds) {
 
   // SAFETY DEFAULTS
   if(b.x === undefined) b.x = Math.random() * canvas.width;
