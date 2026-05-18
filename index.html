@@ -252,20 +252,14 @@ let birdImg = null;
 
 async function getFalconSpriteSheet(){
 
-  if(birdImageCache.spriteSheet){
-    return birdImageCache.spriteSheet = img;
-birdImg = img; // ✅ GLOBAL FIX
-return img;
+  // 1. return cache if already loaded
+  if (birdImageCache.spriteSheet) {
+    birdImg = birdImageCache.spriteSheet;
+    return birdImageCache.spriteSheet;
   }
 
   const prompt =
-    "UAE fantasy falcon sprite sheet, 4 frame horizontal animation, " +
-    "stylized 2D game asset, transparent background, " +
-    "elegant Arabian falcon (national symbol), " +
-    "gold and teal feathers, sand desert + night blue palette, " +
-    "Dubai futuristic desert fantasy style, " +
-    "wing flap sequence (up, mid, down, glide), " +
-    "isolated falcon only, full body cropped tightly, no canvas padding, no empty space, subject fills frame, transparent background PNG style, no border, no square frame, cutout asset";
+    "UAE fantasy falcon sprite sheet, 4 frame horizontal animation, stylized 2D game asset, transparent background, elegant Arabian falcon";
 
   const res = await fetch(`${API_BASE}/api/image`, {
     method: "POST",
@@ -277,7 +271,7 @@ return img;
 
   const data = await res.json();
 
-  if(!data || !data.url){
+  if (!data || !data.url) {
     throw new Error("Sprite sheet generation failed");
   }
 
@@ -290,7 +284,9 @@ return img;
     img.onerror = resolve;
   });
 
+  // 2. store properly
   birdImageCache.spriteSheet = img;
+  birdImg = img;
 
   return img;
 }
