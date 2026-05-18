@@ -343,21 +343,6 @@ async function getBirdImage(rarity){
   return img;
 }
 
-// 👇 INSERT STEP 1.1 TEST HERE
-
-function testFalconSprite(){
-
-  console.log("TEST: loading falcon sprite sheet...");
-
-  getFalconSpriteSheet().then(img=>{
-
-    console.log("SUCCESS:", img);
-
-    document.body.appendChild(img); // temporary visual test
-
-  });
-}
-
 // ================= WEATHER SYSTEM =================
 
 const weatherTypes = [
