@@ -1621,6 +1621,15 @@ for(let i=0;i<25;i++){
 
 b.wingPhase += 0.25;
 
+// ================= SPRITE FRAME ANIMATION =================
+
+b.frameTimer++;
+
+if(b.frameTimer >= b.frameSpeed){
+  b.frame = (b.frame + 1) % 4; // 4-frame sheet
+  b.frameTimer = 0;
+}
+
 const flap =
   Math.sin(b.wingPhase);
 
