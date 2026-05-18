@@ -1563,59 +1563,35 @@ for(let i=0;i<25;i++){
   if(game.weather.type === "Storm") speedModifier = 0.5;
   if(game.weather.type === "Foggy") speedModifier = 0.8;
 
-  // ================= FLYING ANIMATION =================
+// ================= REAL FLYING MOTION =================
 
-b.wingPhase = (b.wingPhase || 0) + 0.15;
+b.wingPhase += 0.25;
 
 const flap =
-  Math.sin(b.wingPhase) * 8;
+  Math.sin(b.wingPhase);
 
-b.x += b.vx * (b.agility * 0.35) * speedModifier;
+const bob =
+  Math.sin(
+    Date.now() * 0.002 +
+    b.bobOffset
+  ) * 12;
 
+// forward flight
+b.x += b.vx * speedModifier;
+
+// floating motion
 b.y +=
-  b.vy * (b.agility * 0.15) * speedModifier +
-  flap * 0.05;
+  b.vy * 0.3 +
+  flap * 1.2;
 
-  // DRAW
-  let birdKey =
-    b.rarity === "Legendary" ? "legendary" :
-    b.rarity === "Rare" ? "rare" :
-    "common";
+// smooth hovering
+b.y += bob * 0.03;
 
-  let img = await getBirdImage(b.rarity);
+// random steering
+if(Math.random() < 0.01){
 
-  if(img && img.complete){
-
-    if(b.rarity === "Legendary"){
-      ctx.shadowColor = "gold";
-      ctx.shadowBlur = 20;
-    }
-
-    ctx.save();
-
-ctx.translate(b.x, b.y);
-
-ctx.rotate(
-  Math.sin(b.wingPhase) * 0.08
-);
-
-const size =
-  50 + Math.sin(b.wingPhase) * 4;
-
-ctx.drawImage(
-  img,
-  -size/2,
-  -size/2,
-  size,
-  size
-);
-
-ctx.restore();
-
-    ctx.shadowBlur = 0;
-  }
-}
-
+  b.vy =
+    (Math.random()-0.5) * 3;
 }
 
 function render(){
