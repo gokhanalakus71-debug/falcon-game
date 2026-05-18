@@ -293,7 +293,7 @@ async function getBirdImage(rarity){
     rarity === "Rare" ? "rare" :
     "common";
 
-  const img = await getAsset("birds", birdKey);
+  const img = await getAsset("bird", birdKey);
 
   birdImageCache[rarity] = img;
 
