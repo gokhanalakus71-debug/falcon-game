@@ -247,6 +247,49 @@ const assetCache = new Map();
 
 const birdImageCache = {};
 
+async function getFalconSpriteSheet(){
+
+  if(birdImageCache.spriteSheet){
+    return birdImageCache.spriteSheet;
+  }
+
+  const prompt =
+    "UAE fantasy falcon sprite sheet, 4 frame horizontal animation, " +
+    "stylized 2D game asset, transparent background, " +
+    "elegant Arabian falcon (national symbol), " +
+    "gold and teal feathers, sand desert + night blue palette, " +
+    "Dubai futuristic desert fantasy style, " +
+    "wing flap sequence (up, mid, down, glide), " +
+    "clean sprite sheet, centered character, no text, no watermark";
+
+  const res = await fetch(`${API_BASE}/api/image`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ prompt })
+  });
+
+  const data = await res.json();
+
+  if(!data || !data.url){
+    throw new Error("Sprite sheet generation failed");
+  }
+
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = data.url;
+
+  await new Promise(resolve => {
+    img.onload = resolve;
+    img.onerror = resolve;
+  });
+
+  birdImageCache.spriteSheet = img;
+
+  return img;
+}
+
 async function getAsset(type, key) {
   console.log("STEP 1 getAsset:", type, key);
 
