@@ -1524,54 +1524,6 @@ async function updateWorld(){
     }
   }
 
-// ================= DRAW BIRD =================
-
-const birdImg =
-  await getBirdImage(b.rarity);
-
-const wingScale =
-  1 + Math.sin(b.wingPhase) * 0.15;
-
-ctx.save();
-
-ctx.translate(b.x, b.y);
-
-// flip direction
-if(b.vx < 0){
-  ctx.scale(-1, 1);
-}
-
-// wing flap animation
-ctx.scale(wingScale, 1);
-
-ctx.drawImage(
-  birdImg,
-  -40,
-  -40,
-  80,
-  80
-);
-
-ctx.restore();
-
-// wrap around screen
-if(b.x > canvas.width + 100){
-  b.x = -100;
-}
-
-if(b.x < -100){
-  b.x = canvas.width + 100;
-}
-
-if(b.y > canvas.height){
-  b.y = 50;
-}
-
-if(b.y < 0){
-  b.y = canvas.height - 50;
-}
-
-} // END bird loop
 
 // ================= PARTICLES =================
 
@@ -1641,6 +1593,53 @@ if(Math.random() < 0.01){
 
   b.vy =
     (Math.random()-0.5) * 3;
+}
+
+// ================= DRAW BIRD =================
+
+const birdImg =
+  await getBirdImage(b.rarity);
+
+const wingScale =
+  1 + Math.sin(b.wingPhase) * 0.15;
+
+ctx.save();
+
+ctx.translate(b.x, b.y);
+
+// flip direction
+if(b.vx < 0){
+  ctx.scale(-1, 1);
+}
+
+// wing flap animation
+ctx.scale(wingScale, 1);
+
+ctx.drawImage(
+  birdImg,
+  -40,
+  -40,
+  80,
+  80
+);
+
+ctx.restore();
+
+// wrap around screen
+if(b.x > canvas.width + 100){
+  b.x = -100;
+}
+
+if(b.x < -100){
+  b.x = canvas.width + 100;
+}
+
+if(b.y > canvas.height){
+  b.y = 50;
+}
+
+if(b.y < 0){
+  b.y = canvas.height - 50;
 }
 
 function render(){
