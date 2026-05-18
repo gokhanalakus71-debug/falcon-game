@@ -1428,7 +1428,7 @@ async function updateWorld(){
   if(game.weather.type === "Foggy") bgKey = "foggy";
   if(game.weather.type === "Rainy") bgKey = "sunny";
 
-  let bg = await getAsset("bg", bgKey);
+  let bg = await getAsset("background", bgKey);
 
   if(bg && bg.complete){
     ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
