@@ -435,24 +435,80 @@ async function generateImage(prompt){
 function buildUAEPrompt(type, variant){
 
   const base =
-    "clean stylized 2D game asset, flat vector style, inspired by Arabian / UAE desert art, falcon culture, geometric patterns, no realism";
+    "masterpiece, ultra detailed stylized 2D game art, UAE culture, Emirati architecture, desert fantasy, luxury Arabian atmosphere, game background, vibrant colors, cinematic lighting, no text, no watermark";
+
+  // ================= BACKGROUNDS =================
 
   if(type === "background"){
 
     return {
-      sunny: `${base}, desert dunes, golden sunrise, minimal sky`,
-      storm: `${base}, desert sandstorm, dramatic wind`,
-      foggy: `${base}, soft haze over desert, muted tones`
-    }[variant];
 
+      sunny:
+        `${base},
+        Dubai skyline at sunset,
+        Burj Khalifa in distance,
+        glowing desert dunes,
+        palm trees,
+        warm golden atmosphere,
+        falcon kingdom style`,
+
+      storm:
+        `${base},
+        dramatic UAE desert sandstorm,
+        lightning over Arabian palace,
+        dark orange sky,
+        cinematic storm clouds,
+        epic fantasy Emirati environment`,
+
+      foggy:
+        `${base},
+        Abu Dhabi royal palace in morning fog,
+        mystical Arabian atmosphere,
+        soft cinematic haze,
+        luxury UAE fantasy world`,
+
+      rainy:
+        `${base},
+        rainy Dubai night,
+        neon reflections,
+        wet streets,
+        futuristic UAE city,
+        cinematic game environment`
+
+    }[variant];
   }
+
+  // ================= BIRDS =================
 
   if(type === "bird"){
 
     return {
-      common: `${base}, simple falcon sprite, brown and gold`,
-      rare: `${base}, glowing falcon, blue-gold accents`,
-      legendary: `${base}, mythic golden falcon, aura, royal UAE symbolism`
+
+      common:
+        `${base},
+        stylized Emirati falcon,
+        brown feathers,
+        traditional UAE falconry,
+        game sprite,
+        animated fantasy bird`,
+
+      rare:
+        `${base},
+        glowing blue royal falcon,
+        magical UAE bird,
+        elegant wings,
+        fantasy game creature,
+        energy particles`,
+
+      legendary:
+        `${base},
+        legendary golden phoenix falcon,
+        royal Emirati mythology,
+        divine glowing wings,
+        ultra cinematic,
+        fantasy boss creature,
+        magical aura`
+
     }[variant];
   }
 }
