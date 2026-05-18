@@ -247,6 +247,9 @@ const assetCache = new Map();
 
 const birdImageCache = {};
 
+// ================= GLOBAL SPRITE REFERENCE =================
+let birdImg = null;
+
 async function getFalconSpriteSheet(){
 
   if(birdImageCache.spriteSheet){
