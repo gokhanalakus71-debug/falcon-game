@@ -1659,36 +1659,36 @@ if(Math.random() < 0.01){
 
 // ================= DRAW BIRD =================
 
-const birdImg =
-  await getBirdImage(b.rarity);
-
-const wingScale =
-  1 + Math.sin(b.wingPhase) * 0.15;
-
 ctx.save();
-
 ctx.translate(b.x, b.y);
 
 // flip direction
-if(b.vx < 0){
+if (b.vx < 0) {
   ctx.scale(-1, 1);
 }
 
-// wing flap animation
-
+// frame setup
 const frameWidth = birdImg.width / 4;
 const frameHeight = birdImg.height;
 
-// dynamic size (removes “UI box” feeling)
+// size
 const size = 90 + Math.sin(b.wingPhase) * 10;
+
+// 🧠 HARD CLIP (removes square feel)
+ctx.beginPath();
+ctx.ellipse(0, 0, size * 0.35, size * 0.3, 0, 0, Math.PI * 2);
+ctx.clip();
 
 ctx.drawImage(
   birdImg,
-  b.frame * frameWidth, 0,      // source X (frame)
-  frameWidth, frameHeight,      // source size
-
-  -size / 2, -size / 2,         // center anchor (IMPORTANT FIX)
-  size, size                    // dynamic render size
+  b.frame * frameWidth,
+  0,
+  frameWidth,
+  frameHeight,
+  -size / 2,
+  -size / 2,
+  size,
+  size
 );
 
 ctx.restore();
