@@ -574,9 +574,13 @@ function login(){
   rarity:"Common",
 
   x:100,
-  y:200,
-  vx:1,
-  vy:1
+y:200,
+
+vx:2 + Math.random()*2,
+vy:(Math.random()-0.5)*1.5,
+
+wingPhase: Math.random()*10,
+bobOffset: Math.random()*100
 }
 ];
 
