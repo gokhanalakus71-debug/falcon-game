@@ -1561,7 +1561,26 @@ b.y +=
       ctx.shadowBlur = 20;
     }
 
-    ctx.drawImage(img, b.x - 25, b.y - 25, 50, 50);
+    ctx.save();
+
+ctx.translate(b.x, b.y);
+
+ctx.rotate(
+  Math.sin(b.wingPhase) * 0.08
+);
+
+const size =
+  50 + Math.sin(b.wingPhase) * 4;
+
+ctx.drawImage(
+  img,
+  -size/2,
+  -size/2,
+  size,
+  size
+);
+
+ctx.restore();
 
     ctx.shadowBlur = 0;
   }
