@@ -1533,13 +1533,18 @@ async function updateWorld(){
   if(game.weather.type === "Storm") speedModifier = 0.5;
   if(game.weather.type === "Foggy") speedModifier = 0.8;
 
-  // MOVEMENT
-  b.x += b.vx * (b.agility * 0.2) * speedModifier;
-  b.y += b.vy * (b.agility * 0.2) * speedModifier;
+  // ================= FLYING ANIMATION =================
 
-  // WALL COLLISION
-  if(b.x < 0 || b.x > canvas.width) b.vx *= -1;
-  if(b.y < 0 || b.y > canvas.height) b.vy *= -1;
+b.wingPhase = (b.wingPhase || 0) + 0.15;
+
+const flap =
+  Math.sin(b.wingPhase) * 8;
+
+b.x += b.vx * (b.agility * 0.35) * speedModifier;
+
+b.y +=
+  b.vy * (b.agility * 0.15) * speedModifier +
+  flap * 0.05;
 
   // DRAW
   let birdKey =
