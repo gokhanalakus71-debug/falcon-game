@@ -1679,12 +1679,16 @@ if(b.vx < 0){
 const frameWidth = birdImg.width / 4;
 const frameHeight = birdImg.height;
 
+// dynamic size (removes “UI box” feeling)
+const size = 90 + Math.sin(b.wingPhase) * 10;
+
 ctx.drawImage(
   birdImg,
   b.frame * frameWidth, 0,      // source X (frame)
   frameWidth, frameHeight,      // source size
-  -40, -40,                     // destination
-  80, 80
+
+  -size / 2, -size / 2,         // center anchor (IMPORTANT FIX)
+  size, size                    // dynamic render size
 );
 
 ctx.restore();
