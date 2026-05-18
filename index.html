@@ -1719,9 +1719,10 @@ if(b.y > canvas.height){
 
 if(b.y < 0){
   b.y = canvas.height - 50;
-}
-}
-}
+    } // end for (game.birds)
+  }   // end if (birdImg ready)
+}     // end updateWorld
+
 function render(){
 
   let app = document.getElementById("ui");
