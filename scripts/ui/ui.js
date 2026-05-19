@@ -31,12 +31,12 @@ function renderHome(){
     <br><br>
 
     🌦 Weather:
-    <b>${game.weather.type}</b>
+    <b>${game.weather?.type || "Clear"}</b>
 
     <br>
 
     🌡 Temperature:
-    <b>${game.weather.temperature}°C</b>
+    <b>${game.weather?.temperature ?? 20}°C</b>
 
     </div>
 
@@ -58,7 +58,6 @@ function renderBirds(){
 
     html += `
       <div class="birdCard"
-        onclick="selectBird(${i})"
         style="
           background:${game.selected===i ? '#1e3a8a' : '#111827'};
           padding:10px;
@@ -77,7 +76,6 @@ function renderBirds(){
 
         Condition:
         ${Math.max(0, Math.min(100, b.condition))}
-        ${renderRiskBar(getInjuryRiskPreview(b, "short"))}
 
         <div class="hp-bar">
           <div class="hp-fill"
@@ -104,7 +102,9 @@ function renderTraining(){
   if(!game.birds || game.birds.length === 0){
     return `
       <h2>No Birds</h2>
-      <button onclick="go('home')">Back</button>
+      <button onclick="go('home')">
+  🏠 Back
+</button>
     `;
   }
 
@@ -116,10 +116,7 @@ function renderTraining(){
       <button onclick="go('birds')">Back</button>
     `;
   }
-
-  const shortRisk = getInjuryRiskPreview(b, "short");
-  const intensiveRisk = getInjuryRiskPreview(b, "intensive");
-  
+ 
   return `
     <h2>🏋️ Falcon Training</h2>
 
@@ -193,7 +190,9 @@ function renderBreeding(){
   game.birds.forEach((b,i)=>{
 
     html += `
-      <div class="birdCard">
+      <div class="birdCard"
+        onclick="selectBird(${i})"
+        style="
 
         <b>${b.name}</b><br>
 
@@ -255,10 +254,6 @@ function renderRiskBar(risk){
   `;
 }
 
-render();
-
-let running = false;
-
 window.addEventListener("error", (e)=>{
   console.log("Game Error:", e.message);
 });
@@ -267,37 +262,12 @@ function renderFeeding(){
 
   const b = game.birds[game.selected];
 
+if (!b) {
   return `
-    <h2>🍖 Feeding Station</h2>
-
-    <div class="panel">
-
-      <h3>${b.name}</h3>
-
-      Strength: ${b.strength}<br>
-      Stamina: ${b.stamina}<br>
-      Charm: ${b.charm}<br>
-
-      <br>
-
-      <button onclick="feedBird('protein')">
-        🍗 Protein Feed
-      </button>
-
-      <button onclick="feedBird('seeds')">
-        🌾 Seeds
-      </button>
-
-      <button onclick="feedBird('fruits')">
-        🍎 Fruits
-      </button>
-
-    </div>
-
-    <button onclick="go('home')">
-      🏠 Back
-    </button>
+    <h2>No Bird Selected</h2>
+    <button onclick="go('birds')">Back</button>
   `;
+}
 }
 
 function renderCompetition(){
@@ -308,8 +278,8 @@ function renderCompetition(){
     return `
       <h2>No Bird Selected</h2>
       <button onclick="go('home')">
-        Back
-      </button>
+  🏠 Back
+</button>
     `;
   }
 
@@ -347,3 +317,5 @@ function renderCompetition(){
     </button>
   `;
 }
+
+render();

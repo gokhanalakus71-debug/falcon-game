@@ -1,7 +1,10 @@
 function trainBird(stat, type){
 
   let b = game.birds[game.selected];
-  if(!b) return;
+  if(!b){
+  floatText("Select a bird first", "orange");
+  return;
+}
 
   // BASE VALUES
   let gain = type === "short" ? 1 : 3;
@@ -94,7 +97,6 @@ function trainBird(stat, type){
   b.condition =
     Math.max(0, Math.min(100, b.condition));
 
-  render();
 }
 
 
@@ -114,7 +116,10 @@ function feedBird(food){
 
   let b = game.birds[game.selected];
 
-  if(!b) return;
+  if(!b){
+  floatText("Select a bird first", "orange");
+  return;
+}
 
   b.feedCount++;
 
@@ -202,7 +207,6 @@ function feedBird(food){
   b.intelligence =
     Math.max(1, b.intelligence);
 
-  render();
 }
 
 const TRAIT_EFFECTS = {

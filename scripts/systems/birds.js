@@ -16,3 +16,5 @@ function selectBird(i){
   render();
   updateWorld();
 }
+onclick="selectBird(${i})"
+
