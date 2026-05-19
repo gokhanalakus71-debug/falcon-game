@@ -96,3 +96,16 @@ function trainBird(stat, type){
 
   render();
 }
+
+
+function getTraitValue(b, key, base = 1){
+  let value = base;
+
+  b.traits.forEach(t => {
+    if(TRAIT_EFFECTS[t] && TRAIT_EFFECTS[t][key]){
+      value *= TRAIT_EFFECTS[t][key];
+    }
+  });
+
+  return value;
+}
