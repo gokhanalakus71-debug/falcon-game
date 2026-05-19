@@ -1,3 +1,5 @@
+// ================= WEATHER SYSTEM =================
+
 game.weather = game.weather || {
   type: "Sunny",
   temperature: 20
@@ -5,17 +7,23 @@ game.weather = game.weather || {
 
 const weatherTypes = ["Sunny", "Windy", "Rainy", "Storm", "Foggy"];
 
-setInterval(() => {
+// prevent multiple intervals if file reloads
+if (!window.__weatherIntervalStarted) {
+  window.__weatherIntervalStarted = true;
 
-  const randomWeather =
-    weatherTypes[Math.floor(Math.random() * weatherTypes.length)];
+  setInterval(() => {
+    if (!game || !game.weather) return;
 
-  game.weather.type = randomWeather;
-  game.weather.temperature = 20 + Math.floor(Math.random() * 15);
+    const randomWeather =
+      weatherTypes[Math.floor(Math.random() * weatherTypes.length)];
 
-  floatText("🌦 Weather: " + randomWeather, "#60a5fa");
+    game.weather.type = randomWeather;
+    game.weather.temperature = 20 + Math.floor(Math.random() * 15);
 
-  // consider replacing full render later
-  render();
+    floatText(`🌦 Weather: ${randomWeather}`, "#60a5fa");
 
-}, 30000);
+    // safer: avoid full UI rerender spam in future scaling
+    render();
+
+  }, 30000);
+}
