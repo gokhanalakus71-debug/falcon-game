@@ -1,3 +1,32 @@
+const TRAIT_EFFECTS = {
+   "Fast Learner": {
+    trainingGain: 1.5,
+    injuryIncrease: 1.1   // learns fast but pushes too hard
+  },
+   "Showstopper": {
+    competitionScore: 1.2,
+    injuryIncrease: 1.2   // high risk performer
+  },
+  "Resilient": {
+    injuryReduction: 0.5
+  },
+  "Fragile": {
+    injuryIncrease: 1.5
+  },
+  "Charming": {
+    charmBonus: 1.5,
+    injuryReduction: 0.9   // calmer, slightly safer
+  }
+};
+
+const RARE_TRAITS = [
+  "Fast Learner",
+  "Showstopper",
+  "Resilient",
+  "Fragile",
+  "Charming"
+];
+
 function trainBird(stat, type){
 
   let b = game.birds[game.selected];
@@ -208,35 +237,6 @@ function feedBird(food){
     Math.max(1, b.intelligence);
 
 }
-
-const TRAIT_EFFECTS = {
-   "Fast Learner": {
-    trainingGain: 1.5,
-    injuryIncrease: 1.1   // learns fast but pushes too hard
-  },
-   "Showstopper": {
-    competitionScore: 1.2,
-    injuryIncrease: 1.2   // high risk performer
-  },
-  "Resilient": {
-    injuryReduction: 0.5
-  },
-  "Fragile": {
-    injuryIncrease: 1.5
-  },
-  "Charming": {
-    charmBonus: 1.5,
-    injuryReduction: 0.9   // calmer, slightly safer
-  }
-};
-
-const RARE_TRAITS = [
-  "Fast Learner",
-  "Showstopper",
-  "Resilient",
-  "Fragile",
-  "Charming"
-];
 
 // ================= RECOVERY SYSTEM =================
 
