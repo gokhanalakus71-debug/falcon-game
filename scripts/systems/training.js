@@ -68,7 +68,7 @@ function trainBird(stat, type){
   // WEATHER BOOST
   if(game.weather && game.weather.type === "Storm"){
   injuryRisk += 0.1;
-  
+
   if(game.weather.type === "Windy" && stat === "agility"){
     gain += 1;
     floatText("🌪 Wind Boost", "#60a5fa");
@@ -256,7 +256,7 @@ setInterval(() => {
       b.condition = (b.condition || 0) + 0.05;
 
       b.feedCount =
-        Math.max(0, b.feedCount - 1);
+        Math.max(0, (b.feedCount || 0) - 1);
 
       b.condition =
         Math.min(100, b.condition);
