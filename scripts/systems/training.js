@@ -45,9 +45,9 @@ function trainBird(stat, type){
     floatText("🌪 Wind Boost", "#60a5fa");
   }
 
-  if(game.weather.type === "Storm"){
-    injuryRisk += 0.1;
-  }
+  if(game.weather && game.weather.type === "Storm"){
+  injuryRisk += 0.1;
+}
 
   // TRAIT BOOST (CLEAN SYSTEM)  
 
@@ -75,6 +75,10 @@ function trainBird(stat, type){
 
   gain *= getTraitValue(b, "trainingGain", 1);
 
+  if(typeof b[stat] !== "number"){
+  return;
+  }
+  
   b[stat] += gain;
 
   // =====================
@@ -132,7 +136,7 @@ function trainBird(stat, type){
 function getTraitValue(b, key, base = 1){
   let value = base;
 
-  b.traits.forEach(t => {
+  (b.traits || []).forEach(t => {
     if(TRAIT_EFFECTS[t] && TRAIT_EFFECTS[t][key]){
       value *= TRAIT_EFFECTS[t][key];
     }
@@ -150,15 +154,14 @@ function feedBird(food){
   return;
 }
 
+  b.feedCount = b.feedCount || 0;
   b.feedCount++;
 
   // =====================
   // FOOD EFFECTS
   // =====================
-  if(
-  game.weather.type === "Storm" &&
-  food === "protein"
-  ){
+  if(game.weather.type === "Storm" &&
+  food === "protein"){
   b.stamina += 1;
 
   floatText(
@@ -282,9 +285,9 @@ function getInjuryRiskPreview(b, type = "short"){
   let injuryRisk = type === "short" ? 0.05 : 0.25;
 
   // WEATHER
-  if(game.weather.type === "Storm"){
-    injuryRisk += 0.1;
-  }
+  if(game.weather && game.weather.type === "Storm"){
+  injuryRisk += 0.1;
+}
 
   // TRAITS
   let injuryIncrease = getTraitValue(b, "injuryIncrease", 1);
