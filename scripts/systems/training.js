@@ -66,6 +66,8 @@ function trainBird(stat, type){
   }
 
   // WEATHER BOOST
+  if(game.weather && game.weather.type === "Storm"){
+  injuryRisk += 0.1;
   
   if(game.weather.type === "Windy" && stat === "agility"){
     gain += 1;
@@ -285,9 +287,6 @@ function getInjuryRiskPreview(b, type = "short"){
 
   let injuryRisk = type === "short" ? 0.05 : 0.25;
 
-  // WEATHER
-  if(game.weather && game.weather.type === "Storm"){
-  injuryRisk += 0.1;
 }
 
   // TRAITS
