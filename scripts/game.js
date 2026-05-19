@@ -1312,9 +1312,7 @@ function startCompetition(level){
 
 // ================= CANVAS INIT =================
 
-const canvas = document.getElementById("world");
 
-const ctx = canvas.getContext("2d");
 
 // ================= RENDER ENGINE =================
 if (!canvas || !ctx) {
@@ -1327,8 +1325,6 @@ function resize(){
 }
 resize();
 window.addEventListener("resize", resize);
-
-
 
 function render(){
 

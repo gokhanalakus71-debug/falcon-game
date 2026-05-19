@@ -197,3 +197,7 @@ if(b.y < 0){
   }   // end if (birdImg ready)
 }     // end updateWorld
 }
+
+const canvas = document.getElementById("world");
+
+const ctx = canvas.getContext("2d");
