@@ -245,7 +245,7 @@ setInterval(() => {
 
   if(typeof scene !== "undefined" && scene === "home"){
 
-    game.birds.forEach(b => {
+    (game.birds || []).forEach(b => {
 
       b.condition += 0.05;
 
