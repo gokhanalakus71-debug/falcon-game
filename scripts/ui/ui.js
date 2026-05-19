@@ -58,6 +58,7 @@ function renderBirds(){
 
     html += `
       <div class="birdCard"
+        onclick="selectBird(${i})"
         style="
           background:${game.selected===i ? '#1e3a8a' : '#111827'};
           padding:10px;
@@ -66,24 +67,21 @@ function renderBirds(){
           box-shadow:0 0 10px rgba(59,130,246,0.2);
           transition:0.2s;
           cursor:pointer;
-        ">
+          ">
 
-        <b>${b.name}</b>
-        (${b.rarity})<br>
+        <b>${b.name}</b><br>
 
-        Traits:
-        ${b.traits.join(", ")}<br>
+        STR ${b.strength}
+        | AGI ${b.agility}
+        | INT ${b.intelligence}
 
-        Condition:
-        ${Math.max(0, Math.min(100, b.condition))}
+        <br><br>
 
-        <div class="hp-bar">
-          <div class="hp-fill"
-            style="width:${Math.max(0, Math.min(100, b.condition))}%">
-          </div>
+        <button onclick="breed(${i})">
+          Breed With Selected
+        </button>
+
         </div>
-
-      </div>
     `;
   });
 
@@ -262,12 +260,44 @@ function renderFeeding(){
 
   const b = game.birds[game.selected];
 
-if (!b) {
+  if(!b){
+    return `
+      <h2>No Bird Selected</h2>
+      <button onclick="go('birds')">Back</button>
+    `;
+  }
+
   return `
-    <h2>No Bird Selected</h2>
-    <button onclick="go('birds')">Back</button>
+    <h2>🍖 Feeding Station</h2>
+
+    <div class="panel">
+
+      <h3>${b.name}</h3>
+
+      Strength: ${b.strength}<br>
+      Stamina: ${b.stamina}<br>
+      Charm: ${b.charm}<br>
+
+      <br>
+
+      <button onclick="feedBird('protein')">
+        🍗 Protein Feed
+      </button>
+
+      <button onclick="feedBird('seeds')">
+        🌾 Seeds
+      </button>
+
+      <button onclick="feedBird('fruits')">
+        🍎 Fruits
+      </button>
+
+    </div>
+
+    <button onclick="go('home')">
+      🏠 Back
+    </button>
   `;
-}
 }
 
 function renderCompetition(){
