@@ -58,16 +58,30 @@ function renderBirds(){
 
     html += `
       <div class="birdCard"
-  onclick="selectBird(${i})"
-  style="
-    background:${game.selected===i ? '#1e3a8a' : '#111827'};
-    padding:10px;
-    margin:8px;
-    border-radius:12px;
-    box-shadow:0 0 10px rgba(59,130,246,0.2);
-    transition:0.2s;
-    cursor:pointer;
-  ">
+        onclick="selectBird(${i})"
+        style="
+          background:${game.selected===i ? '#1e3a8a' : '#111827'};
+          padding:10px;
+          margin:8px;
+          border-radius:12px;
+          box-shadow:0 0 10px rgba(59,130,246,0.2);
+          transition:0.2s;
+          cursor:pointer;
+        ">
+
+        <b>${b.name}</b><br>
+
+        STR ${b.strength}
+        | AGI ${b.agility}
+        | INT ${b.intelligence}
+
+        <br><br>
+
+        <button onclick="breed(${i}); event.stopPropagation();">
+          Breed With Selected
+        </button>
+
+      </div>
     `;
   });
 
