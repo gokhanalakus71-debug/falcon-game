@@ -31,398 +31,158 @@ const RARE_TRAITS = [
   "Charming"
 ];
 
-// =====================
-// TRAINING
-// =====================
+// ===================== TRAINING =====================
 
-function trainBird(stat, type){
+function trainBird(stat, type) {
+  const b = game.birds?.[game.selected];
 
-  let b = game.birds[game.selected];
-
-  if(!b){
+  if (!b) {
     floatText("Select a bird first", "orange");
     return;
   }
 
-  // invalid stat safety
-  if(typeof b[stat] !== "number"){
-    return;
-  }
+  if (typeof b[stat] !== "number") return;
 
-  // BASE VALUES
-  let gain =
-    type === "short" ? 1 : 3;
+  let gain = type === "short" ? 1 : 3;
+  let injuryRisk = type === "short" ? 0.05 : 0.25;
 
-  let injuryRisk =
-    type === "short" ? 0.05 : 0.25;
+  if (type === "short") b.condition -= 3;
+  if (type === "intensive") b.condition -= 10;
 
-  // =====================
-  // TRAINING TYPES
-  // =====================
-
-  if(type === "short"){
-
-    b.condition -= 3;
-  }
-
-  if(type === "intensive"){
-
-    b.condition -= 10;
-  }
-
-  // =====================
-  // WEATHER BOOSTS
-  // =====================
-
-  if(
-    game.weather &&
-    game.weather.type === "Storm"
-  ){
+  // WEATHER
+  if (game.weather?.type === "Storm") {
     injuryRisk += 0.1;
   }
 
-  if(
-    game.weather &&
-    game.weather.type === "Windy" &&
-    stat === "agility"
-  ){
+  if (game.weather?.type === "Windy" && stat === "agility") {
     gain += 1;
-
-    floatText(
-      "🌪 Wind Boost",
-      "#60a5fa"
-    );
+    floatText("🌪 Wind Boost", "#60a5fa");
   }
 
-  // =====================
-  // TRAIT BOOSTS
-  // =====================
-
-  gain *= getTraitValue(
-    b,
-    "trainingGain",
-    1
-  );
-
-  // APPLY GAIN
+  // TRAITS
+  gain *= getTraitValue(b, "trainingGain", 1);
   b[stat] += gain;
 
-  // =====================
-  // INJURY SYSTEM
-  // =====================
+  const injuryIncrease = getTraitValue(b, "injuryIncrease", 1);
+  const injuryReduction = getTraitValue(b, "injuryReduction", 1);
+  const injuryModifier = injuryIncrease * injuryReduction;
 
-  let injuryIncrease =
-    getTraitValue(
-      b,
-      "injuryIncrease",
-      1
-    );
-
-  let injuryReduction =
-    getTraitValue(
-      b,
-      "injuryReduction",
-      1
-    );
-
-  let injuryModifier =
-    injuryIncrease * injuryReduction;
-
-  if(
-    Math.random() <
-    injuryRisk * injuryModifier
-  ){
-
+  if (Math.random() < injuryRisk * injuryModifier) {
     b.condition -= 15;
-
     flashScreen("red");
-
-    floatText(
-      "🤕 INJURED!",
-      "red"
-    );
-
-    // injury penalty
-    b.agility =
-      Math.max(1, b.agility - 1);
-
-  }else{
-
+    floatText("🤕 INJURED!", "red");
+    b.agility = Math.max(1, b.agility - 1);
+  } else {
     flashScreen("green");
-
-    floatText(
-      "+" + stat.toUpperCase(),
-      "#22c55e"
-    );
+    floatText("+" + stat.toUpperCase(), "#22c55e");
   }
 
-  // =====================
-  // EXHAUSTION
-  // =====================
-
-  if(b.condition < 20){
-
-    b.stamina =
-      Math.max(1, b.stamina - 1);
-
-    floatText(
-      "EXHAUSTED",
-      "orange"
-    );
+  if (b.condition < 20) {
+    b.stamina = Math.max(1, b.stamina - 1);
+    floatText("EXHAUSTED", "orange");
   }
 
-  // =====================
   // LIMITS
-  // =====================
+  b.condition = clamp(b.condition, 0, 100);
 
-  b.condition =
-    Math.max(
-      0,
-      Math.min(100, b.condition)
-    );
-
-  b.strength =
-    Math.max(1, b.strength);
-
-  b.agility =
-    Math.max(1, b.agility);
-
-  b.stamina =
-    Math.max(1, b.stamina);
-
-  b.intelligence =
-    Math.max(1, b.intelligence);
-
-  b.charm =
-    Math.max(1, b.charm);
+  b.strength = Math.max(1, b.strength);
+  b.agility = Math.max(1, b.agility);
+  b.stamina = Math.max(1, b.stamina);
+  b.intelligence = Math.max(1, b.intelligence);
+  b.charm = Math.max(1, b.charm);
 
   render();
 }
 
-// =====================
-// TRAIT VALUE HELPER
-// =====================
+// ===================== TRAITS =====================
 
-function getTraitValue(
-  b,
-  key,
-  base = 1
-){
-
+function getTraitValue(b, key, base = 1) {
   let value = base;
 
   (b.traits || []).forEach(t => {
-
-    if(
-      TRAIT_EFFECTS[t] &&
-      TRAIT_EFFECTS[t][key]
-    ){
-      value *=
-        TRAIT_EFFECTS[t][key];
+    if (TRAIT_EFFECTS[t]?.[key]) {
+      value *= TRAIT_EFFECTS[t][key];
     }
   });
 
   return value;
 }
 
-// =====================
-// FEEDING
-// =====================
+// ===================== FEEDING =====================
 
-function feedBird(food){
+function feedBird(food) {
+  const b = game.birds?.[game.selected];
 
-  let b = game.birds[game.selected];
-
-  if(!b){
-    floatText(
-      "Select a bird first",
-      "orange"
-    );
+  if (!b) {
+    floatText("Select a bird first", "orange");
     return;
   }
 
-  b.feedCount =
-    b.feedCount || 0;
+  b.feedCount = (b.feedCount || 0) + 1;
 
-  b.feedCount++;
-
-  // =====================
-  // WEATHER BONUS
-  // =====================
-
-  if(
-    game.weather &&
-    game.weather.type === "Storm" &&
-    food === "protein"
-  ){
-
+  if (game.weather?.type === "Storm" && food === "protein") {
     b.stamina += 1;
-
-    floatText(
-      "⚡ Storm Energy",
-      "#60a5fa"
-    );
+    floatText("⚡ Storm Energy", "#60a5fa");
   }
 
-  // =====================
-  // FOOD EFFECTS
-  // =====================
-
-  if(food === "protein"){
-
+  if (food === "protein") {
     b.strength += 1;
-
-    floatText(
-      "+STRENGTH",
-      "#ef4444"
-    );
+    floatText("+STRENGTH", "#ef4444");
   }
 
-  if(food === "seeds"){
-
+  if (food === "seeds") {
     b.stamina += 1;
-
-    floatText(
-      "+STAMINA",
-      "#22c55e"
-    );
+    floatText("+STAMINA", "#22c55e");
   }
 
-  if(food === "fruits"){
-
-    let bonus = 1;
-
-    if(
-      (b.traits || []).includes(
-        "Charming"
-      )
-    ){
-      bonus = 2;
-    }
-
+  if (food === "fruits") {
+    const bonus = (b.traits || []).includes("Charming") ? 2 : 1;
     b.charm += bonus;
-
-    floatText(
-      "+CHARM",
-      "#f59e0b"
-    );
+    floatText("+CHARM", "#f59e0b");
   }
 
-  // =====================
-  // OVERFEED PENALTY
-  // =====================
-
-  if(b.feedCount > 5){
-
+  if (b.feedCount > 5) {
     b.condition -= 10;
-
     flashScreen("red");
-
-    floatText(
-      "OVERFED!",
-      "red"
-    );
+    floatText("OVERFED!", "red");
   }
 
-  // =====================
-  // BAD DIET PENALTIES
-  // =====================
-
-  if(
-    food === "protein" &&
-    b.strength > b.stamina + 10
-  ){
-
+  if (food === "protein" && b.strength > b.stamina + 10) {
     b.agility -= 1;
-
-    floatText(
-      "HEAVY BODY",
-      "orange"
-    );
+    floatText("HEAVY BODY", "orange");
   }
 
-  if(
-    food === "fruits" &&
-    b.charm > 15
-  ){
-
+  if (food === "fruits" && b.charm > 15) {
     b.intelligence -= 1;
-
-    floatText(
-      "SPOILED",
-      "pink"
-    );
+    floatText("SPOILED", "pink");
   }
 
-  // =====================
   // LIMITS
-  // =====================
-
-  b.condition =
-    Math.max(
-      0,
-      Math.min(100, b.condition)
-    );
-
-  b.strength =
-    Math.max(1, b.strength);
-
-  b.agility =
-    Math.max(1, b.agility);
-
-  b.stamina =
-    Math.max(1, b.stamina);
-
-  b.intelligence =
-    Math.max(1, b.intelligence);
-
-  b.charm =
-    Math.max(1, b.charm);
+  b.condition = clamp(b.condition, 0, 100);
+  b.strength = Math.max(1, b.strength);
+  b.agility = Math.max(1, b.agility);
+  b.stamina = Math.max(1, b.stamina);
+  b.intelligence = Math.max(1, b.intelligence);
+  b.charm = Math.max(1, b.charm);
 
   render();
 }
 
-// =====================
-// RECOVERY SYSTEM
-// =====================
+// ===================== RECOVERY =====================
 
 setInterval(() => {
+  if (scene !== "home") return;
 
-  if(
-    typeof scene !== "undefined" &&
-    scene === "home"
-  ){
-
-    (game.birds || []).forEach(b => {
-
-      b.condition =
-        (b.condition ?? 100) + 0.05;
-
-      b.feedCount =
-        Math.max(
-          0,
-          (b.feedCount || 0) - 1
-        );
-
-      b.condition =
-        Math.max(
-          0,
-          Math.min(100, b.condition)
-        );
-    });
-  }
-
+  (game.birds || []).forEach(b => {
+    b.condition = clamp((b.condition ?? 100) + 0.05, 0, 100);
+    b.feedCount = Math.max(0, (b.feedCount || 0) - 1);
+  });
 }, 1000);
 
-// =====================
-// FLASH EFFECT
-// =====================
+// ===================== EFFECTS =====================
 
-function flashScreen(color){
-
-  const div =
-    document.createElement("div");
-
+function flashScreen(color) {
+  const div = document.createElement("div");
   div.style.position = "fixed";
   div.style.inset = "0";
   div.style.background = color;
@@ -431,54 +191,28 @@ function flashScreen(color){
   div.style.pointerEvents = "none";
 
   document.body.appendChild(div);
-
-  setTimeout(() => {
-    div.remove();
-  }, 150);
+  setTimeout(() => div.remove(), 150);
 }
 
-// =====================
-// RISK PREVIEW
-// =====================
+// ===================== RISK PREVIEW =====================
 
-function getInjuryRiskPreview(
-  b,
-  type = "short"
-){
+function getInjuryRiskPreview(b, type = "short") {
+  let injuryRisk = type === "short" ? 0.05 : 0.25;
 
-  let injuryRisk =
-    type === "short"
-      ? 0.05
-      : 0.25;
-
-  // WEATHER
-  if(
-    game.weather &&
-    game.weather.type === "Storm"
-  ){
+  if (game.weather?.type === "Storm") {
     injuryRisk += 0.1;
   }
 
-  // TRAITS
-  let injuryIncrease =
-    getTraitValue(
-      b,
-      "injuryIncrease",
-      1
-    );
+  const injuryIncrease = getTraitValue(b, "injuryIncrease", 1);
+  const injuryReduction = getTraitValue(b, "injuryReduction", 1);
 
-  let injuryReduction =
-    getTraitValue(
-      b,
-      "injuryReduction",
-      1
-    );
+  injuryRisk *= injuryIncrease * injuryReduction;
 
-  let modifier =
-    injuryIncrease * injuryReduction;
-
-  injuryRisk *= modifier;
-
-  // clamp
   return Math.min(1, injuryRisk);
+}
+
+// ===================== UTILITY =====================
+
+function clamp(v, min, max) {
+  return Math.max(min, Math.min(max, v));
 }
