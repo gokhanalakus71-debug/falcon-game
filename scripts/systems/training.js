@@ -39,12 +39,6 @@ function trainBird(stat, type){
   let gain = type === "short" ? 1 : 3;
   let injuryRisk = type === "short" ? 0.05 : 0.25;
 
-  // WEATHER BOOST
-  if(game.weather.type === "Windy" && stat === "agility"){
-    gain += 1;
-    floatText("🌪 Wind Boost", "#60a5fa");
-  }
-
   if(game.weather && game.weather.type === "Storm"){
   injuryRisk += 0.1;
 }
@@ -69,6 +63,13 @@ function trainBird(stat, type){
     injuryRisk = 0.25;
 
     b.condition -= 10;
+  }
+
+  // WEATHER BOOST
+  
+  if(game.weather.type === "Windy" && stat === "agility"){
+    gain += 1;
+    floatText("🌪 Wind Boost", "#60a5fa");
   }
 
   // APPLY GAIN
@@ -160,7 +161,7 @@ function feedBird(food){
   // =====================
   // FOOD EFFECTS
   // =====================
-  if(game.weather.type === "Storm" &&
+  if(game.weather && game.weather.type === "Storm" &&
   food === "protein"){
   b.stamina += 1;
 
@@ -188,7 +189,7 @@ function feedBird(food){
 
   let bonus = 1;
 
-  if(b.traits.includes("Charming")){
+  if((b.traits || []).includes("Charming")){
     bonus = 2;
   }
 
@@ -250,7 +251,7 @@ setInterval(() => {
 
     (game.birds || []).forEach(b => {
 
-      b.condition += 0.05;
+      b.condition = (b.condition || 0) + 0.05;
 
       b.feedCount =
         Math.max(0, b.feedCount - 1);
