@@ -206,39 +206,3 @@ function feedBird(food){
 }
 
 // ================= FEEDING =================
-function renderFeeding(){
-
-  const b = game.birds[game.selected];
-
-  return `
-    <h2>🍖 Feeding Station</h2>
-
-    <div class="panel">
-
-      <h3>${b.name}</h3>
-
-      Strength: ${b.strength}<br>
-      Stamina: ${b.stamina}<br>
-      Charm: ${b.charm}<br>
-
-      <br>
-
-      <button onclick="feedBird('protein')">
-        🍗 Protein Feed
-      </button>
-
-      <button onclick="feedBird('seeds')">
-        🌾 Seeds
-      </button>
-
-      <button onclick="feedBird('fruits')">
-        🍎 Fruits
-      </button>
-
-    </div>
-
-    <button onclick="go('home')">
-      🏠 Back
-    </button>
-  `;
-}

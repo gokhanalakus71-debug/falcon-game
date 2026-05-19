@@ -1,45 +1,5 @@
 // ================= BREEDING =================
 
-function renderBreeding(){
-
-  let html = `
-    <h2>🧬 Falcon Breeding</h2>
-
-    <div class="panel">
-  `;
-
-  game.birds.forEach((b,i)=>{
-
-    html += `
-      <div class="birdCard">
-
-        <b>${b.name}</b><br>
-
-        STR ${b.strength}
-        | AGI ${b.agility}
-        | INT ${b.intelligence}
-
-        <br><br>
-
-        <button onclick="breed(${i})">
-          Breed With Selected
-        </button>
-
-      </div>
-    `;
-  });
-
-  html += `
-    </div>
-
-    <button onclick="go('home')">
-      🏠 Back
-    </button>
-  `;
-
-  return html;
-}
-
 function breed(i){
 
   if (!game.birds || game.birds.length < 2) {
