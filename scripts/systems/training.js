@@ -243,7 +243,7 @@ function feedBird(food){
 // Bird recovery every second
 setInterval(() => {
 
-  if(scene === "home"){
+  if(typeof scene !== "undefined" && scene === "home"){
 
     game.birds.forEach(b => {
 
