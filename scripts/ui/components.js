@@ -1,11 +1,10 @@
-function renderRiskBar(risk){
+function renderRiskBar(risk = 0) {
+  const percent = Math.max(0, Math.min(100, Math.floor(risk * 100)));
 
-  const percent = Math.min(100, Math.floor(risk * 100));
-
-  let color = "#22c55e"; // green safe
-
-  if(percent > 30) color = "#f59e0b"; // orange warning
-  if(percent > 60) color = "#ef4444"; // red danger
+  const color =
+    percent > 60 ? "#ef4444" :   // red danger
+    percent > 30 ? "#f59e0b" :   // orange warning
+    "#22c55e";                   // green safe
 
   return `
     <div style="margin-top:6px;">
@@ -20,7 +19,7 @@ function renderRiskBar(risk){
           width:${percent}%;
           height:100%;
           background:${color};
-          transition:0.3s;
+          transition:width 0.3s ease;
         "></div>
       </div>
 
