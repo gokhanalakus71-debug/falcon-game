@@ -256,8 +256,6 @@ setInterval(() => {
         Math.min(100, b.condition);
 
     });
-
-    render();
   }
 
 }, 1000);
