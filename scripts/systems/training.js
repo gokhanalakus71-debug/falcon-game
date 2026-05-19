@@ -205,4 +205,72 @@ function feedBird(food){
   render();
 }
 
-// ================= FEEDING =================
+const TRAIT_EFFECTS = {
+   "Fast Learner": {
+    trainingGain: 1.5,
+    injuryIncrease: 1.1   // learns fast but pushes too hard
+  },
+   "Showstopper": {
+    competitionScore: 1.2,
+    injuryIncrease: 1.2   // high risk performer
+  },
+  "Resilient": {
+    injuryReduction: 0.5
+  },
+  "Fragile": {
+    injuryIncrease: 1.5
+  },
+  "Charming": {
+    charmBonus: 1.5,
+    injuryReduction: 0.9   // calmer, slightly safer
+  }
+};
+
+const RARE_TRAITS = [
+  "Fast Learner",
+  "Showstopper",
+  "Resilient",
+  "Fragile",
+  "Charming"
+];
+
+// ================= RECOVERY SYSTEM =================
+
+// Bird recovery every second
+setInterval(() => {
+
+  if(scene === "home"){
+
+    game.birds.forEach(b => {
+
+      b.condition += 0.05;
+
+      b.feedCount =
+        Math.max(0, b.feedCount - 1);
+
+      b.condition =
+        Math.min(100, b.condition);
+
+    });
+
+    render();
+  }
+
+}, 1000);
+
+function flashScreen(color){
+  const div = document.createElement("div");
+
+  div.style.position = "fixed";
+  div.style.inset = "0";
+  div.style.background = color;
+  div.style.opacity = "0.35";
+  div.style.zIndex = "9999";
+  div.style.pointerEvents = "none";
+
+  document.body.appendChild(div);
+
+  setTimeout(()=>{
+    div.remove();
+  }, 150);
+}
