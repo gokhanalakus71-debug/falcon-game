@@ -27,3 +27,10 @@ setInterval(() => {
   render();
 
 }, 30000);
+
+function getWeatherModifiers(){
+  return {
+    injuryBonus: game.weather.type === "Storm" ? 0.1 : 0,
+    agilityBonus: game.weather.type === "Windy" ? 1 : 0
+  };
+}
