@@ -99,27 +99,6 @@ function renderBirds(){
   return html;
 }
 
-function getInjuryRiskPreview(b, type = "short"){
-
-  let injuryRisk = type === "short" ? 0.05 : 0.25;
-
-  // WEATHER
-  if(game.weather.type === "Storm"){
-    injuryRisk += 0.1;
-  }
-
-  // TRAITS
-  let injuryIncrease = getTraitValue(b, "injuryIncrease", 1);
-  let injuryReduction = getTraitValue(b, "injuryReduction", 1);
-
-  let modifier = injuryIncrease * injuryReduction;
-
-  injuryRisk *= modifier;
-
-  // clamp for UI safety
-  return Math.min(1, injuryRisk);
-}
-
 function renderTraining(){
 
   if(!game.birds || game.birds.length === 0){
@@ -243,6 +222,47 @@ function renderBreeding(){
   return html;
 }
 
+function renderRiskBar(risk){
+
+  const percent = Math.min(100, Math.floor(risk * 100));
+
+  let color = "#22c55e"; // green safe
+
+  if(percent > 30) color = "#f59e0b"; // orange warning
+  if(percent > 60) color = "#ef4444"; // red danger
+
+  return `
+    <div style="margin-top:6px;">
+      <div style="
+        width:100%;
+        height:8px;
+        background:rgba(255,255,255,0.08);
+        border-radius:999px;
+        overflow:hidden;
+      ">
+        <div style="
+          width:${percent}%;
+          height:100%;
+          background:${color};
+          transition:0.3s;
+        "></div>
+      </div>
+
+      <small style="opacity:0.8;">
+        Injury Risk: ${percent}%
+      </small>
+    </div>
+  `;
+}
+
+render();
+
+let running = false;
+
+window.addEventListener("error", (e)=>{
+  console.log("Game Error:", e.message);
+});
+
 function renderFeeding(){
 
   const b = game.birds[game.selected];
@@ -327,101 +347,3 @@ function renderCompetition(){
     </button>
   `;
 }
-
-function renderRiskBar(risk){
-
-  const percent = Math.min(100, Math.floor(risk * 100));
-
-  let color = "#22c55e"; // green safe
-
-  if(percent > 30) color = "#f59e0b"; // orange warning
-  if(percent > 60) color = "#ef4444"; // red danger
-
-  return `
-    <div style="margin-top:6px;">
-      <div style="
-        width:100%;
-        height:8px;
-        background:rgba(255,255,255,0.08);
-        border-radius:999px;
-        overflow:hidden;
-      ">
-        <div style="
-          width:${percent}%;
-          height:100%;
-          background:${color};
-          transition:0.3s;
-        "></div>
-      </div>
-
-      <small style="opacity:0.8;">
-        Injury Risk: ${percent}%
-      </small>
-    </div>
-  `;
-}
-
-function selectBird(i){
-  game.selected = i;
-
-  const cards = document.querySelectorAll(".birdCard");
-
-  if(cards[i]){
-    cards[i].style.transform = "scale(1.08)";
-    cards[i].style.boxShadow = "0 0 20px rgba(59,130,246,0.6)";
-
-    setTimeout(()=>{
-      cards[i].style.transform = "scale(1)";
-      cards[i].style.boxShadow = "0 0 10px rgba(59,130,246,0.2)";
-    }, 150);
-  }
-
-  render();
-  updateWorld();
-}
-
-// ================= RENDER ENGINE =================
-if (!canvas || !ctx) {
-  throw new Error("Canvas not found or 2D context unavailable");
-}
-
-function resize(){
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
-
-function render(){
-
-  let app = document.getElementById("ui");
-  if(!app) return;
-
-  app.innerHTML =
-    scene === "login"
-    ? renderLogin()
-    : scene === "home"
-    ? renderHome()
-    : scene === "birds"
-    ? renderBirds()
-    : scene === "training"
-    ? renderTraining()
-    : scene === "feeding"
-    ? renderFeeding()
-    : scene === "breeding"
-    ? renderBreeding()
-    : scene === "competition"
-    ? renderCompetition()
-    : renderHome();
-}
-
-// ================= START =================
-
-render();
-
-let running = false;
-
-window.addEventListener("error", (e)=>{
-  console.log("Game Error:", e.message);
-});
-

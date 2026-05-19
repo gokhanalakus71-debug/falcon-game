@@ -201,3 +201,37 @@ if(b.y < 0){
 const canvas = document.getElementById("world");
 
 const ctx = canvas.getContext("2d");
+
+if (!canvas || !ctx) {
+  throw new Error("Canvas not found or 2D context unavailable");
+}
+
+function resize(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+function render(){
+
+  let app = document.getElementById("ui");
+  if(!app) return;
+
+  app.innerHTML =
+    scene === "login"
+    ? renderLogin()
+    : scene === "home"
+    ? renderHome()
+    : scene === "birds"
+    ? renderBirds()
+    : scene === "training"
+    ? renderTraining()
+    : scene === "feeding"
+    ? renderFeeding()
+    : scene === "breeding"
+    ? renderBreeding()
+    : scene === "competition"
+    ? renderCompetition()
+    : renderHome();
+}

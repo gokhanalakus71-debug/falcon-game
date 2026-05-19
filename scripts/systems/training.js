@@ -274,3 +274,24 @@ function flashScreen(color){
     div.remove();
   }, 150);
 }
+
+function getInjuryRiskPreview(b, type = "short"){
+
+  let injuryRisk = type === "short" ? 0.05 : 0.25;
+
+  // WEATHER
+  if(game.weather.type === "Storm"){
+    injuryRisk += 0.1;
+  }
+
+  // TRAITS
+  let injuryIncrease = getTraitValue(b, "injuryIncrease", 1);
+  let injuryReduction = getTraitValue(b, "injuryReduction", 1);
+
+  let modifier = injuryIncrease * injuryReduction;
+
+  injuryRisk *= modifier;
+
+  // clamp for UI safety
+  return Math.min(1, injuryRisk);
+}
