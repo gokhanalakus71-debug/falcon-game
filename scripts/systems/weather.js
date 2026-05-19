@@ -14,7 +14,7 @@ setInterval(() => {
       Math.floor(Math.random() * weatherTypes.length)
     ];
 
-  game.weather.type = randomWeather;
+  if (!game.weather) game.weather = {};
 
   game.weather.temperature =
     20 + Math.floor(Math.random() * 15);
