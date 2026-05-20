@@ -203,13 +203,13 @@ h1, h2 {
 
 <!-- ================= CORE ================= -->
 
+<script src="game.js"></script>
+
 <script src="scripts/assets/assets.js"></script>
 
 <script>
   console.log("ASSETS READY:", typeof window.getAsset);
 </script>
-
-<script src="scripts/game.js"></script>
 
 <!-- ================= ECS ================= -->
 
@@ -243,10 +243,27 @@ h1, h2 {
 <script src="scripts/ui/ui.js"></script>
 <script src="scripts/ui/render.js"></script>
 
+<!-- ================= GAME NAVIGATION FIX ================= -->
+
+<script>
+  function go(nextScene) {
+    window.scene = nextScene;
+
+    if (typeof renderUI === "function") {
+      renderUI();
+    }
+  }
+
+  window.go = go;
+</script>
+
 <!-- ================= START ================= -->
 
 <script>
-  startEngine();
+  window.addEventListener("load", () => {
+    console.log("GAME STARTING...");
+    startEngine();
+  });
 </script>
 
 </body>
