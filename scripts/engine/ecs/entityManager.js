@@ -1,27 +1,21 @@
 // =============================
-// COMPONENT REGISTRY
-// =============================
-
-const COMPONENTS = {
-  POSITION: "position",
-  VELOCITY: "velocity",
-  SPRITE: "sprite",
-  STATS: "stats",
-  AI: "ai",
-  ANIMATION: "animation",
-  BIRD: "bird",
-  TRAITS: "traits",
-  CONDITION: "condition"
-};
-
-// =============================
-// ECS CORE STORAGE
+// ECS CORE (CLEAN VERSION)
 // =============================
 
 const ECS = {
   nextEntityId: 1,
   entities: new Map(),
   components: {}
+};
+
+const COMPONENTS = {
+  POSITION: "position",
+  VELOCITY: "velocity",
+  STATS: "stats",
+  TRAITS: "traits",
+  BIRD: "bird",
+  CONDITION: "condition",
+  ANIMATION: "animation"
 };
 
 // =============================
@@ -35,87 +29,54 @@ function createEntity() {
 }
 
 // =============================
-// REMOVE ENTITY
+// COMPONENTS
 // =============================
 
-function removeEntity(entityId) {
-  if (!ECS.entities.has(entityId)) return;
-
-  ECS.entities.delete(entityId);
-
-  for (const componentName in ECS.components) {
-    ECS.components[componentName].delete(entityId);
+function addComponent(id, name, data) {
+  if (!ECS.components[name]) {
+    ECS.components[name] = new Map();
   }
+  ECS.components[name].set(id, data);
 }
 
-// =============================
-// ADD COMPONENT
-// =============================
-
-function addComponent(entityId, componentName, data) {
-  if (!ECS.entities.has(entityId)) {
-    console.warn("Entity does not exist:", entityId);
-    return;
-  }
-
-  if (!ECS.components[componentName]) {
-    ECS.components[componentName] = new Map();
-  }
-
-  ECS.components[componentName].set(entityId, data);
+function getComponent(id, name) {
+  return ECS.components[name]?.get(id);
 }
 
-// =============================
-// GET COMPONENT
-// =============================
-
-function getComponent(entityId, componentName) {
-  return ECS.components[componentName]?.get(entityId);
-}
-
-// =============================
-// REMOVE COMPONENT
-// =============================
-
-function removeComponent(entityId, componentName) {
-  ECS.components[componentName]?.delete(entityId);
+function removeComponent(id, name) {
+  ECS.components[name]?.delete(id);
 }
 
 // =============================
 // QUERY SYSTEM
 // =============================
 
-function getEntitiesWith(...componentNames) {
-  const results = [];
+function getEntitiesWith(...components) {
+  const result = [];
 
-  for (const entityId of ECS.entities.keys()) {
-    let valid = true;
+  for (const id of ECS.entities.keys()) {
+    let ok = true;
 
-    for (const name of componentNames) {
-      if (
-        !ECS.components[name] ||
-        !ECS.components[name].has(entityId)
-      ) {
-        valid = false;
+    for (const c of components) {
+      if (!ECS.components[c]?.has(id)) {
+        ok = false;
         break;
       }
     }
 
-    if (valid) results.push(entityId);
+    if (ok) result.push(id);
   }
 
-  return results;
+  return result;
 }
 
 // =============================
-// GLOBAL EXPORTS
+// EXPORTS
 // =============================
 
 window.ECS = ECS;
 window.COMPONENTS = COMPONENTS;
-
 window.createEntity = createEntity;
-window.removeEntity = removeEntity;
 window.addComponent = addComponent;
 window.getComponent = getComponent;
 window.removeComponent = removeComponent;

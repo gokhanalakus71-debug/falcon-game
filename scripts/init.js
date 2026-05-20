@@ -1,36 +1,10 @@
-// =============================
-// ECS SYSTEM INITIALIZATION
-// =============================
+// ================= INIT ECS =================
 
-// global system registry (single source of truth)
 window.SYSTEMS = window.SYSTEMS || [];
 
-// =============================
-// REGISTER SYSTEM
-// =============================
-
 function registerSystem(system) {
-  if (!window.SYSTEMS.includes(system)) {
-    window.SYSTEMS.push(system);
-  }
+  window.SYSTEMS.push(system);
 }
-
-// =============================
-// SYSTEM INITIALIZATION
-// =============================
-
-function initSystems() {
-  registerSystem(birdMovementSystem);
-
-  // optional render system (only if it exists)
-  if (typeof birdRenderSystem !== "undefined") {
-    registerSystem(birdRenderSystem);
-  }
-}
-
-// =============================
-// SYSTEM UPDATE LOOP
-// =============================
 
 function updateSystems(dt) {
   for (const sys of window.SYSTEMS) {
@@ -38,8 +12,15 @@ function updateSystems(dt) {
   }
 }
 
-// =============================
-// BOOT SYSTEMS ON LOAD
-// =============================
+// ================= REGISTER SYSTEMS =================
 
-window.addEventListener("load", initSystems);
+function initSystems() {
+  registerSystem(birdMovementSystem);
+  registerSystem(birdRenderSystem);
+}
+
+// ================= BOOT =================
+
+window.addEventListener("load", () => {
+  initSystems();
+});

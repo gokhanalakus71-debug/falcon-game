@@ -2,15 +2,13 @@
 
 const canvas = document.getElementById("world");
 
-if (!canvas) {
-  throw new Error("Canvas not found");
-}
+if (!canvas) throw new Error("Canvas not found");
 
 const ctx = canvas.getContext("2d");
 
-if (!ctx) {
-  throw new Error("2D context unavailable");
-}
+if (!ctx) throw new Error("2D context unavailable");
+
+// ================= RESIZE =================
 
 function resize() {
   canvas.width = window.innerWidth;
@@ -20,20 +18,18 @@ function resize() {
 resize();
 window.addEventListener("resize", resize);
 
-
 // ================= WORLD RENDER =================
 
 async function renderWorld() {
-
   if (!game || !game.weather) return;
 
   // ================= BACKGROUND =================
 
   let bgKey = "sunny";
 
-  if (game.weather?.type === "Storm") bgKey = "storm";
-  if (game.weather?.type === "Foggy") bgKey = "foggy";
-  if (game.weather?.type === "Rainy") bgKey = "sunny";
+  if (game.weather.type === "Storm") bgKey = "storm";
+  if (game.weather.type === "Foggy") bgKey = "foggy";
+  if (game.weather.type === "Rainy") bgKey = "rainy";
 
   const bg = await getAsset("background", bgKey);
 
@@ -41,61 +37,55 @@ async function renderWorld() {
     ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
   }
 
-  // ================= WEATHER OVERLAYS =================
+  // ================= FOG OVERLAY =================
 
-  if (game.weather?.type === "Foggy") {
+  if (game.weather.type === "Foggy") {
     ctx.fillStyle = "rgba(255,255,255,0.08)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 
-  if (game.weather?.type === "Rainy") {
-    for (let i = 0; i < 80; i++) {
+  // ================= RAIN EFFECT =================
+
+  if (game.weather.type === "Rainy") {
+    ctx.strokeStyle = "rgba(120,160,255,0.5)";
+
+    for (let i = 0; i < 60; i++) {
+      const x = (i * 97 + Date.now() * 0.3) % canvas.width;
+      const y = (i * 53 + Date.now() * 0.6) % canvas.height;
+
       ctx.beginPath();
-
-      ctx.moveTo(
-        Math.random() * canvas.width,
-        Math.random() * canvas.height
-      );
-
-      ctx.lineTo(
-        Math.random() * canvas.width,
-        Math.random() * canvas.height + 10
-      );
-
-      ctx.strokeStyle = "rgba(100,150,255,0.5)";
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + 4, y + 10);
       ctx.stroke();
     }
   }
 
   // ================= PARTICLES =================
 
-  for (let i = 0; i < 25; i++) {
+  const time = Date.now() * 0.001;
 
-    const x = (Date.now() * 0.02 + i * 80) % canvas.width;
-    const y = (i * 50 + Date.now() * 0.01) % canvas.height;
+  for (let i = 0; i < 20; i++) {
+    const x = (time * 60 + i * 120) % canvas.width;
+    const y = (time * 40 + i * 80) % canvas.height;
 
     ctx.beginPath();
     ctx.arc(x, y, 2, 0, Math.PI * 2);
-
     ctx.fillStyle = "rgba(255,215,0,0.15)";
     ctx.fill();
   }
 
-  // ================= ECS BIRDS RENDER (NEW SYSTEM) =================
+  // ================= ECS BIRDS =================
 
-  if (!birdImg || !birdImg.complete || !birdImg.naturalWidth) {
-    return;
-  }
+  if (!birdImg || !birdImg.complete || !birdImg.naturalWidth) return;
 
   const entities = getEntitiesWith("position", "animation", "bird");
 
   for (const e of entities) {
-
     const pos = getComponent(e, "position");
     const anim = getComponent(e, "animation");
     const bird = getComponent(e, "bird");
 
-    if (!pos || !anim) continue;
+    if (!pos || !anim || !bird) continue;
 
     const frameWidth = birdImg.width / 4;
     const frameHeight = birdImg.height;
@@ -105,10 +95,13 @@ async function renderWorld() {
     ctx.save();
     ctx.translate(pos.x, pos.y);
 
-    if (pos.vx < 0) {
+    // SAFE FLIP (FIXED: vx is NOT in position component)
+    const vel = getComponent(e, "velocity");
+    if (vel?.vx < 0) {
       ctx.scale(-1, 1);
     }
 
+    // BODY CLIP
     ctx.beginPath();
     ctx.ellipse(0, 0, size * 0.35, size * 0.3, 0, 0, Math.PI * 2);
     ctx.clip();
@@ -126,5 +119,17 @@ async function renderWorld() {
     );
 
     ctx.restore();
+
+    // ================= ANIMATION UPDATE =================
+
+    anim.wingPhase += 0.25;
+
+    anim.frameTimer = (anim.frameTimer || 0) + 1;
+    anim.frameSpeed = anim.frameSpeed || 6;
+
+    if (anim.frameTimer >= anim.frameSpeed) {
+      anim.frame = (anim.frame + 1) % 4;
+      anim.frameTimer = 0;
+    }
   }
 }

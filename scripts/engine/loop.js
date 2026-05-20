@@ -1,28 +1,28 @@
+// ================= ENGINE LOOP =================
+
 let lastTime = 0;
 
-function gameLoop(time) {
-  const dt = Math.min(0.033, (time - lastTime) / 1000);
-  lastTime = time;
+// ================= MAIN LOOP =================
 
-  // =====================
-  // UPDATE ECS SYSTEMS
-  // =====================
+function gameLoop(timestamp) {
+  const dt = Math.min((timestamp - lastTime) / 1000, 0.033);
+  lastTime = timestamp;
 
-  if (typeof updateSystems === "function") {
-    updateSystems(dt);
-  }
+  updateSystems(dt);
 
-  // =====================
-  // RENDER WORLD
-  // =====================
-
-  if (typeof renderWorld === "function") {
-    renderWorld();
-  }
+  renderWorld();
 
   requestAnimationFrame(gameLoop);
 }
+
+// ================= START ENGINE =================
 
 function startEngine() {
+  lastTime = performance.now();
   requestAnimationFrame(gameLoop);
 }
+
+// ================= GLOBAL EXPORT =================
+
+window.startEngine = startEngine;
+window.gameLoop = gameLoop;

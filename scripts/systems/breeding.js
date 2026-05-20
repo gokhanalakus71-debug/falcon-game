@@ -1,7 +1,4 @@
-// ================= BREEDING SYSTEM (CLEAN ECS) =================
-
 function breed(i) {
-
   if (!game.birdEntities || game.birdEntities.length < 2) {
     alert("Not enough birds to breed");
     return;
@@ -17,24 +14,22 @@ function breed(i) {
 
   if (!parentA || !parentB) return;
 
-  const statsA = getComponent(parentA, "stats");
-  const statsB = getComponent(parentB, "stats");
+  const statsA = getComponent(parentA, "stats") || {};
+  const statsB = getComponent(parentB, "stats") || {};
 
   const traitsA = getComponent(parentA, "traits")?.list || [];
   const traitsB = getComponent(parentB, "traits")?.list || [];
 
-  const avg = (a, b) =>
-    Math.max(1, Math.floor((a + b) / 2 + (Math.random() * 4 - 2)));
+  const avg = (a = 1, b = 1) =>
+    Math.max(1, Math.floor((a + b) / 2) + (Math.random() * 4 - 2));
 
   const child = createEntity();
 
-  // ================= POSITION =================
   addComponent(child, "position", {
     x: 100 + Math.random() * 200,
     y: 100 + Math.random() * 200
   });
 
-  // ================= STATS =================
   addComponent(child, "stats", {
     strength: avg(statsA.strength, statsB.strength),
     agility: avg(statsA.agility, statsB.agility),
@@ -43,22 +38,27 @@ function breed(i) {
     charm: avg(statsA.charm, statsB.charm)
   });
 
-  // ================= TRAITS =================
   addComponent(child, "traits", {
     list: [...new Set([...traitsA, ...traitsB])]
   });
 
-  // ================= BIRD DATA =================
   addComponent(child, "bird", {
     name: "Hybrid Falcon",
     rarity: "Common"
   });
 
-  // ================= CONDITION =================
   addComponent(child, "condition", {
     value: 100
   });
 
+  addComponent(child, "animation", {
+    frame: 0,
+    frameTimer: 0,
+    frameSpeed: 6,
+    wingPhase: 0
+  });
+
+  // IMPORTANT: keep ECS + UI in sync
   game.birdEntities.push(child);
   game.selected = game.birdEntities.length - 1;
 

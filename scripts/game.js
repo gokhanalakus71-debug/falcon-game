@@ -1,3 +1,5 @@
+// ================= FLOAT TEXT =================
+
 function floatText(text, color = "white") {
   const el = document.createElement("div");
   el.className = "float";
@@ -48,7 +50,7 @@ function login() {
 
   game.user = { email };
 
-  // CREATE FIRST BIRD (ECS CORRECT WAY)
+  // ================= CREATE FIRST ECS BIRD =================
   const birdEntity = createBird({
     name: "Falcon A",
     rarity: "Common",
@@ -70,9 +72,10 @@ function login() {
   game.birdEntities = [birdEntity];
   game.selected = 0;
 
-  // DEBUG (SAFE)
+  // ================= DEBUG =================
   console.log("🐦 Created bird entity:", birdEntity);
-  console.log("🐦 ECS entities:", ECS.entities);
+  console.log("🐦 ECS entities:", window.ECS?.entities);
+  console.log("🐦 Total ECS count:", window.ECS?.entities?.size);
 
   go("home");
 }
@@ -86,7 +89,7 @@ function getSelectedBird() {
   return getBirdFromEntity(entity);
 }
 
-// ================= ECS TO BIRD CONVERTER =================
+// ================= ECS → BIRD CONVERTER =================
 
 function getBirdFromEntity(entity) {
   if (!entity) return null;
@@ -95,7 +98,7 @@ function getBirdFromEntity(entity) {
   const stats = getComponent(entity, "stats");
   const traits = getComponent(entity, "traits");
   const condition = getComponent(entity, "condition");
-  const pos = getComponent(entity, "position");
+  const position = getComponent(entity, "position");
 
   return {
     entity,
@@ -103,16 +106,21 @@ function getBirdFromEntity(entity) {
     name: bird?.name ?? "Unknown",
     rarity: bird?.rarity ?? "Common",
 
-    x: pos?.x ?? 0,
-    y: pos?.y ?? 0,
+    x: position?.x ?? 0,
+    y: position?.y ?? 0,
 
-    stats: stats ?? {},
+    strength: stats?.strength ?? 5,
+    agility: stats?.agility ?? 5,
+    intelligence: stats?.intelligence ?? 5,
+    stamina: stats?.stamina ?? 5,
+    charm: stats?.charm ?? 5,
+
     traits: traits?.list ?? [],
     condition: condition?.value ?? 100
   };
 }
 
-// ================= ERROR HANDLER =================
+// ================= GLOBAL ERROR HANDLER =================
 
 window.addEventListener("error", (e) => {
   console.log("Game Error:", e.message);
