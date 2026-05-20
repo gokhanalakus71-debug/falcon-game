@@ -31,7 +31,7 @@ async function renderWorld() {
   if (game.weather.type === "Foggy") bgKey = "foggy";
   if (game.weather.type === "Rainy") bgKey = "rainy";
 
-  const bg = await getAsset("background", bgKey);
+  const bg = await window.getAsset("background", bgKey);
 
   if (bg?.complete) {
     ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);

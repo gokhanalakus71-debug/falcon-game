@@ -28,3 +28,5 @@ try {
 } catch (err) {
   console.error("💥 ASSETS ERROR:", err);
 }
+
+window.getAsset = getAsset;
