@@ -1,218 +1,96 @@
-// ================= BREEDING =================
+// ================= BREEDING (ECS VERSION) =================
 
-function breed(i){
+function breed(i) {
 
-  if(!game.birdEntities || game.birdEntities.length < 2){
-    alert("Not enough birds to breed");
+  const parentA = game.birdEntities?.[game.selected];
+  const parentB = game.birdEntities?.[i];
+
+  if (!parentA || !parentB) {
+    floatText("Select valid birds", "orange");
     return;
   }
 
-  if(i === game.selected){
-    alert("Select another bird");
+  if (i === game.selected) {
+    floatText("Select another bird", "orange");
     return;
   }
 
-  let p1 = game.birdEntities[game.selected];
-  let p2 = game.birdEntities[i];
+  const p1 = getBirdFromEntity(parentA);
+  const p2 = getBirdFromEntity(parentB);
 
-  if(!p1 || !p2){
-    return;
+  if (!p1 || !p2) return;
+
+  // ================= MUTATION =================
+
+  function mutate(avg) {
+    const m = Math.floor(Math.random() * 5) - 2;
+    return Math.max(1, avg + m);
   }
 
-  // =====================
-  // MUTATION SYSTEM
-  // =====================
+  // ================= TRAITS =================
 
-  function mutateStat(avg){
+  const combined = [...(p1.traits || []), ...(p2.traits || [])];
+  const unique = [...new Set(combined)];
 
-    let mutation =
-      Math.floor(Math.random() * 5) - 2;
-      // -2 to +2
+  const inherited = [];
+  const traitCount = 1 + Math.floor(Math.random() * 2);
 
-    return Math.max(1, avg + mutation);
-  }
+  for (let i = 0; i < traitCount; i++) {
+    if (!unique.length) break;
 
-  // =====================
-  // TRAIT INHERITANCE
-  // =====================
+    const t = unique[Math.floor(Math.random() * unique.length)];
 
-  let combinedTraits = [
-    ...(p1.traits || []),
-    ...(p2.traits || [])
-  ];
-
-  let uniqueTraits =
-    [...new Set(combinedTraits)];
-
-  let inheritedTraits = [];
-
-  let traitCount =
-    1 + Math.floor(Math.random() * 2);
-
-  // 20% mutation chance
-  let mutationRoll =
-    Math.random() < 0.2;
-
-  for(let t = 0; t < traitCount; t++){
-
-    if(uniqueTraits.length === 0){
-      break;
-    }
-
-    let randomTrait =
-      uniqueTraits[
-        Math.floor(
-          Math.random() * uniqueTraits.length
-        )
-      ];
-
-    if(
-      randomTrait &&
-      !inheritedTraits.includes(randomTrait)
-    ){
-      inheritedTraits.push(randomTrait);
+    if (t && !inherited.includes(t)) {
+      inherited.push(t);
     }
   }
 
-  // =====================
-  // TRAIT MUTATION
-  // =====================
-
-  if(
-    mutationRoll &&
-    typeof RARE_TRAITS !== "undefined"
-  ){
-
-    let randomTrait =
-      RARE_TRAITS[
-        Math.floor(
-          Math.random() * RARE_TRAITS.length
-        )
-      ];
-
-    if(
-      randomTrait &&
-      !inheritedTraits.includes(randomTrait)
-    ){
-      inheritedTraits.push(randomTrait);
-    }
+  // rare mutation
+  if (Math.random() < 0.2 && typeof RARE_TRAITS !== "undefined") {
+    const r = RARE_TRAITS[Math.floor(Math.random() * RARE_TRAITS.length)];
+    if (r && !inherited.includes(r)) inherited.push(r);
 
     floatText("🧬 MUTATION!", "#a855f7");
   }
 
-  // =====================
-  // RARE MUTATION
-  // =====================
+  // ================= RARITY =================
 
   let rarity = "Common";
+  const roll = Math.random();
 
-  let rareRoll = Math.random();
-
-  if(rareRoll > 0.95){
-
+  if (roll > 0.95) {
     rarity = "Legendary";
-
-    if(!inheritedTraits.includes("Mythic")){
-      inheritedTraits.push("Mythic");
-    }
-
-  }else if(rareRoll > 0.80){
-
+    inherited.push("Mythic");
+  } else if (roll > 0.8) {
     rarity = "Rare";
   }
 
-  // =====================
-  // CREATE CHILD
-  // =====================
+  // ================= CREATE ECS BIRD =================
 
-  let child = {
-
+  const child = createBirdECS({
     name: "Hybrid Falcon",
+    rarity,
 
-    rarity: rarity,
+    strength: mutate((p1.stats.strength + p2.stats.strength) / 2),
+    agility: mutate((p1.stats.agility + p2.stats.agility) / 2),
+    intelligence: mutate((p1.stats.intelligence + p2.stats.intelligence) / 2),
+    stamina: mutate((p1.stats.stamina + p2.stats.stamina) / 2),
+    charm: mutate((p1.stats.charm + p2.stats.charm) / 2),
 
-    traits: inheritedTraits,
-
-    condition: 100,
-
-    feedCount: 0,
-
-    charm:
-      mutateStat(
-        Math.floor(
-          (
-            (p1.charm || 5) +
-            (p2.charm || 5)
-          ) / 2
-        )
-      ),
-
-    strength:
-      mutateStat(
-        Math.floor(
-          (
-            (p1.strength || 5) +
-            (p2.strength || 5)
-          ) / 2
-        )
-      ),
-
-    agility:
-      mutateStat(
-        Math.floor(
-          (
-            (p1.agility || 5) +
-            (p2.agility || 5)
-          ) / 2
-        )
-      ),
-
-    intelligence:
-      mutateStat(
-        Math.floor(
-          (
-            (p1.intelligence || 5) +
-            (p2.intelligence || 5)
-          ) / 2
-        )
-      ),
-
-    stamina:
-      mutateStat(
-        Math.floor(
-          (
-            (p1.stamina || 5) +
-            (p2.stamina || 5)
-          ) / 2
-        )
-      ),
+    traits: inherited,
 
     x: 100 + Math.random() * 300,
     y: 100 + Math.random() * 200,
-
     vx: 2 + Math.random() * 2,
-    vy: (Math.random() - 0.5) * 1.5,
-
-    wingPhase: Math.random() * 10,
-    bobOffset: Math.random() * 100,
-
-    // 🦅 ANIMATION STATE
-    frame: 0,
-    frameTimer: 0,
-    frameSpeed: 6
-  };
-
-  flashScreen("blue");
+    vy: (Math.random() - 0.5) * 1.5
+  });
 
   game.birdEntities.push(child);
 
-  floatText(
-    "🧬 " + rarity + " FALCON!",
-    "#60a5fa"
-  );
+  flashScreen("blue");
+  floatText(`🧬 ${rarity} FALCON!`, "#60a5fa");
 
-  game.selected =
-    game.birdEntities.length - 1;
+  game.selected = game.birdEntities.length - 1;
 
   renderUI();
 }
