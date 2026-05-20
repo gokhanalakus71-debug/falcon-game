@@ -1,12 +1,5 @@
-// ================= BIRD MOVEMENT SYSTEM =================
-
 function birdMovementSystem(dt) {
-
-  const entities = getEntitiesWith(
-    "position",
-    "velocity",
-    "animation"
-  );
+  const entities = getEntitiesWith("position", "velocity", "animation");
 
   for (const e of entities) {
 
@@ -16,47 +9,28 @@ function birdMovementSystem(dt) {
 
     if (!pos || !vel || !anim) continue;
 
-    // ================= SAFE DEFAULTS =================
+    pos.x += vel.vx * 60 * dt;
+    pos.y += vel.vy * 60 * dt;
 
-    vel.vx ??= 0;
-    vel.vy ??= 0;
+    anim.wingPhase = (anim.wingPhase || 0) + 0.25;
 
-    anim.frame ??= 0;
-    anim.frameTimer ??= 0;
-    anim.frameSpeed ??= 6;
-    anim.wingPhase ??= 0;
-
-    // ================= MOVEMENT =================
-
-    pos.x += vel.vx * dt * 60;
-    pos.y += vel.vy * dt * 60;
-
-    // ================= ANIMATION =================
-
-    anim.wingPhase += 0.25;
-
-    anim.frameTimer++;
+    anim.frameTimer = (anim.frameTimer || 0) + 1;
 
     if (anim.frameTimer >= anim.frameSpeed) {
       anim.frame = (anim.frame + 1) % 4;
       anim.frameTimer = 0;
     }
 
-    // ================= SIMPLE FLIGHT AI =================
-
+    // simple AI drift
     if (Math.random() < 0.01) {
       vel.vy = (Math.random() - 0.5) * 3;
     }
 
-    // ================= SCREEN WRAP =================
+    // screen wrap
+    if (pos.x > window.innerWidth + 100) pos.x = -100;
+    if (pos.x < -100) pos.x = window.innerWidth + 100;
 
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-
-    if (pos.x > w + 100) pos.x = -100;
-    if (pos.x < -100) pos.x = w + 100;
-
-    if (pos.y > h + 100) pos.y = -100;
-    if (pos.y < -100) pos.y = h + 100;
+    if (pos.y > window.innerHeight) pos.y = 50;
+    if (pos.y < 0) pos.y = window.innerHeight - 50;
   }
 }

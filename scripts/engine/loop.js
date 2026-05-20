@@ -1,75 +1,28 @@
 let lastTime = 0;
-let accumulator = 0;
 
-const FIXED_TIMESTEP = 1000 / 60; // 60 FPS
-const MAX_FRAME_TIME = 250;
-
-let running = false;
-
-// =====================
-// MAIN LOOP
-// =====================
-
-function gameLoop(timestamp = 0) {
-
-  if (!running) return;
-
-  // delta time
-  let delta = timestamp - lastTime;
-
-  // prevent giant lag spikes
-  if (delta > MAX_FRAME_TIME) {
-    delta = MAX_FRAME_TIME;
-  }
-
-  lastTime = timestamp;
-
-  accumulator += delta;
+function gameLoop(time) {
+  const dt = Math.min(0.033, (time - lastTime) / 1000);
+  lastTime = time;
 
   // =====================
-  // FIXED UPDATE
+  // UPDATE ECS SYSTEMS
   // =====================
 
-  while (accumulator >= FIXED_TIMESTEP) {
-
-    update(FIXED_TIMESTEP / 1000);
-
-    accumulator -= FIXED_TIMESTEP;
+  if (typeof updateSystems === "function") {
+    updateSystems(dt);
   }
 
-  // ================= RENDER =================
+  // =====================
+  // RENDER WORLD
+  // =====================
 
-ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-// ECS BIRD RENDERING (NEW)
-birdRenderSystem(ctx);
-
-// UI/world overlay (optional legacy)
-renderWorld();
-renderUI();
+  if (typeof renderWorld === "function") {
+    renderWorld();
+  }
 
   requestAnimationFrame(gameLoop);
 }
-
-// =====================
-// START ENGINE
-// =====================
 
 function startEngine() {
-
-  if (running) return;
-
-  running = true;
-
-  lastTime = performance.now();
-
   requestAnimationFrame(gameLoop);
-}
-
-// =====================
-// STOP ENGINE
-// =====================
-
-function stopEngine() {
-  running = false;
 }
