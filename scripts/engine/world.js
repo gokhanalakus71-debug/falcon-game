@@ -76,7 +76,13 @@ async function renderWorld() {
 
   // ================= ECS BIRDS =================
 
-  if (!birdImg || !birdImg.complete || !birdImg.naturalWidth) return;
+  if (
+  !window.birdImg ||
+  !window.birdImg.complete ||
+  window.birdImg.naturalWidth === 0
+) {
+  return;
+}
 
   const entities = getEntitiesWith("position", "animation", "bird");
 
