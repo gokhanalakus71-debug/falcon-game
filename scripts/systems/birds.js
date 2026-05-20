@@ -23,6 +23,6 @@ function selectBird(i){
     }, 150);
   }
 
-  render();
+  renderUI();
   updateWorld();
 }

@@ -87,47 +87,6 @@ frameSpeed: 6
   go("home");
 }
 
-// ================= RENDER ENGINE =================
-if (!canvas || !ctx) {
-  throw new Error("Canvas not found or 2D context unavailable");
-}
-
-function resize(){
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
-
-function render(){
-
-  let app = document.getElementById("ui");
-  if(!app) return;
-
-  app.innerHTML =
-    scene === "login"
-    ? renderLogin()
-    : scene === "home"
-    ? renderHome()
-    : scene === "birds"
-    ? renderBirds()
-    : scene === "training"
-    ? renderTraining()
-    : scene === "feeding"
-    ? renderFeeding()
-    : scene === "breeding"
-    ? renderBreeding()
-    : scene === "competition"
-    ? renderCompetition()
-    : renderHome();
-}
-
-// ================= START =================
-
-render();
-
-let running = false;
-
 window.addEventListener("error", (e)=>{
   console.log("Game Error:", e.message);
 });

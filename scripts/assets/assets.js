@@ -170,7 +170,7 @@ function go(newScene){
   setTimeout(() => {
 
     scene = newScene;
-    render();
+    renderUI();
 
     app.classList.remove("fade-out");
 

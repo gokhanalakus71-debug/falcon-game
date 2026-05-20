@@ -91,7 +91,7 @@ function trainBird(stat, type) {
   b.intelligence = Math.max(1, b.intelligence);
   b.charm = Math.max(1, b.charm);
 
-  render();
+  renderUI();
 }
 
 // ===================== TRAITS =====================
@@ -165,7 +165,7 @@ function feedBird(food) {
   b.intelligence = Math.max(1, b.intelligence);
   b.charm = Math.max(1, b.charm);
 
-  render();
+  renderUI();
 }
 
 // ===================== RECOVERY =====================

@@ -214,5 +214,5 @@ function breed(i){
   game.selected =
     game.birds.length - 1;
 
-  render();
+  renderUI();
 }

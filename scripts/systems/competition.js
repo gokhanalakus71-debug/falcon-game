@@ -131,5 +131,5 @@ function startCompetition(level){
     result
   );
 
-  render();
+  renderUI();
 }

@@ -356,4 +356,4 @@ function renderCompetition(){
   `;
 }
 
-render();
+renderUI();

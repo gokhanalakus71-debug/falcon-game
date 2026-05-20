@@ -23,7 +23,7 @@ if (!window.__weatherIntervalStarted) {
     floatText(`🌦 Weather: ${randomWeather}`, "#60a5fa");
 
     // safer: avoid full UI rerender spam in future scaling
-    render();
+    renderUI();
 
   }, 30000);
 }

@@ -1,27 +1,3 @@
-// ================= WORLD LOOP =================
-
-let running = false;
-
-function loop(){
-
-  if(running) return;
-  running = true;
-
-  updateWorld()
-    .finally(() => {
-
-      running = false;
-
-      setTimeout(() => {
-        requestAnimationFrame(loop);
-      }, 1000 / 30);
-
-    });
-}
-
-loop();
-
-
 // ================= CANVAS SETUP =================
 
 const canvas = document.getElementById("world");
@@ -47,7 +23,7 @@ window.addEventListener("resize", resize);
 
 // ================= WORLD UPDATE =================
 
-async function updateWorld(){
+async function renderWorld(){
 
   if(!game || !game.weather) return;
 
@@ -202,23 +178,4 @@ async function updateWorld(){
     if(b.y > canvas.height) b.y = 50;
     if(b.y < 0) b.y = canvas.height - 50;
   }
-}
-
-
-// ================= UI RENDER =================
-
-function render(){
-
-  const app = document.getElementById("ui");
-  if(!app) return;
-
-  app.innerHTML =
-    scene === "login" ? renderLogin() :
-    scene === "home" ? renderHome() :
-    scene === "birds" ? renderBirds() :
-    scene === "training" ? renderTraining() :
-    scene === "feeding" ? renderFeeding() :
-    scene === "breeding" ? renderBreeding() :
-    scene === "competition" ? renderCompetition() :
-    renderHome();
 }

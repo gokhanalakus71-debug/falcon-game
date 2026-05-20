@@ -42,6 +42,7 @@ function gameLoop(timestamp = 0) {
   // =====================
 
   renderWorld();
+  renderUI();
 
   requestAnimationFrame(gameLoop);
 }
