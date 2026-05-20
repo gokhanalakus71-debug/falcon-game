@@ -1,6 +1,8 @@
-// ================= BIRD RENDER SYSTEM (NO IMAGE MODE) =================
+// ================= SPRITE BIRD RENDER SYSTEM =================
 
 function birdRenderSystem(ctx) {
+
+  const sprite = getSprite("bird");
 
   const entities = getEntitiesWith("position", "animation", "bird");
 
@@ -13,58 +15,60 @@ function birdRenderSystem(ctx) {
 
     if (!pos || !anim || !bird) continue;
 
-    // ================= SAFE DEFAULTS =================
-    anim.wingPhase = anim.wingPhase || 0;
+    // ================= FALLBACK MODE =================
+    if (!sprite?.loaded) {
 
-    const size = 90 + Math.sin(anim.wingPhase) * 10;
+      ctx.fillStyle = "#60a5fa";
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, 18, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "white";
+      ctx.font = "10px system-ui";
+      ctx.textAlign = "center";
+      ctx.fillText(bird.name, pos.x, pos.y - 25);
+
+      continue;
+    }
+
+    // ================= SPRITE MODE =================
+
+    const frameWidth = sprite.frameWidth;
+    const frameHeight = sprite.frameHeight;
+
+    const frame = Math.floor(anim.frame || 0) % 4;
+
+    const size = 90 + Math.sin(anim.wingPhase || 0) * 10;
 
     ctx.save();
     ctx.translate(pos.x, pos.y);
 
-    // ================= FLIP =================
-    if (vel?.vx < 0) {
-      ctx.scale(-1, 1);
-    }
+    // flip
+    if (vel?.vx < 0) ctx.scale(-1, 1);
 
-    // ================= BODY =================
-    ctx.fillStyle = "#60a5fa";
-    ctx.beginPath();
-    ctx.ellipse(0, 0, size * 0.35, size * 0.28, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // ================= WINGS =================
-    const wing = Math.sin(anim.wingPhase * 2) * 6;
-
-    ctx.fillStyle = "#3b82f6";
-
-    ctx.beginPath();
-    ctx.ellipse(-size * 0.25, wing, size * 0.25, size * 0.18, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.ellipse(size * 0.25, -wing, size * 0.25, size * 0.18, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // ================= EYE =================
-    ctx.fillStyle = "white";
-    ctx.beginPath();
-    ctx.arc(5, -3, 2.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "black";
-    ctx.beginPath();
-    ctx.arc(5.5, -3, 1.2, 0, Math.PI * 2);
-    ctx.fill();
-
-    // ================= NAME =================
-    ctx.fillStyle = "white";
-    ctx.font = "12px system-ui";
-    ctx.textAlign = "center";
-    ctx.fillText(bird.name || "Bird", 0, -22);
+    ctx.drawImage(
+      sprite.sheet,
+      frame * frameWidth,
+      0,
+      frameWidth,
+      frameHeight,
+      -size / 2,
+      -size / 2,
+      size,
+      size
+    );
 
     ctx.restore();
 
-    // ================= ANIMATION UPDATE =================
+    // ================= ANIMATION =================
     anim.wingPhase += 0.15;
+
+    anim.frameTimer = (anim.frameTimer || 0) + 1;
+    anim.frameSpeed = anim.frameSpeed || 6;
+
+    if (anim.frameTimer >= anim.frameSpeed) {
+      anim.frame = (anim.frame || 0) + 1;
+      anim.frameTimer = 0;
+    }
   }
 }
