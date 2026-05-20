@@ -228,4 +228,6 @@ function renderCompetition() {
 
 // ================= UI ENTRY =================
 
-renderUI();
+if (typeof window.renderUI === "function") {
+  window.renderUI();
+}
