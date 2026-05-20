@@ -1,32 +1,34 @@
-// ================= ASSET STORAGE =================
+console.log("🔥 ASSETS START LOADED");
+
+function loadImage(src) {
+  const img = new Image();
+
+  img.loaded = false;
+
+  img.onload = () => {
+    img.loaded = true;
+    console.log("✅ Loaded:", src);
+  };
+
+  img.onerror = () => {
+    console.error("❌ Failed:", src);
+  };
+
+  img.src = src;
+  return img;
+}
 
 window.assets = {
   background: {
-    sunny: new Image(),
-    storm: new Image(),
-    foggy: new Image(),
-    rainy: new Image()
+    sunny: loadImage("assets/sunny.png"),
+    storm: loadImage("assets/storm.png"),
+    foggy: loadImage("assets/foggy.png"),
+    rainy: loadImage("assets/rainy.png")
   }
 };
-
-// ================= BACKGROUND IMAGES =================
-
-window.assets.background.sunny.src = "assets/sunny.png";
-window.assets.background.storm.src = "assets/storm.png";
-window.assets.background.foggy.src = "assets/foggy.png";
-window.assets.background.rainy.src = "assets/rainy.png";
-
-// ================= BIRD SPRITE =================
-
-window.birdImg = new Image();
-window.birdImg.src = "assets/bird.png";
-
-// ================= GET ASSET =================
 
 window.getAsset = function(type, key) {
   return window.assets?.[type]?.[key] || null;
 };
 
-// ================= DEBUG =================
-
-console.log("✅ Assets loaded");
+console.log("✅ ASSETS READY");
