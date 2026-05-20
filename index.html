@@ -242,10 +242,20 @@ h1, h2 {
 <!-- ================= START ================= -->
 
 <script>
-  window.addEventListener("load", () => {
-    console.log("🚀 GAME STARTING...");
-    startEngine();
-  });
+window.addEventListener("load", () => {
+  if (!window.getAsset) {
+    console.error("Assets not loaded");
+    return;
+  }
+
+  if (!window.game) {
+    console.error("Game not initialized");
+    return;
+  }
+
+  console.log("🚀 GAME BOOT SAFE START");
+  startEngine();
+});
 </script>
 
 </body>

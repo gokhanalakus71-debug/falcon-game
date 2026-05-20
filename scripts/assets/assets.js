@@ -1,35 +1,24 @@
-console.log("🔥 ASSETS LOADING...");
+console.log("🔥 ASSETS START LOADED");
 
-function loadImage(src) {
+function createDummyImage(color) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1;
+  canvas.height = 1;
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, 1, 1);
+
   const img = new Image();
-
-  img.loaded = false;
-
-  img.onload = () => {
-    img.loaded = true;
-    console.log("✅ Loaded:", src);
-  };
-
-  img.onerror = () => {
-    console.error("❌ Failed:", src);
-  };
-
-  img.src = src;
+  img.src = canvas.toDataURL();
   return img;
 }
 
-// ================= ASSET REGISTRY =================
-
 window.assets = {
   background: {
-    sunny: loadImage("https://picsum.photos/1280/720?random=1"),
-    storm: loadImage("https://picsum.photos/1280/720?random=2"),
-    foggy: loadImage("https://picsum.photos/1280/720?random=3"),
-    rainy: loadImage("https://picsum.photos/1280/720?random=4")
-  },
-
-  bird: {
-    default: loadImage("https://dummyimage.com/256x256/1e3a8a/ffffff.png&text=Bird")
+    sunny: createDummyImage("yellow"),
+    storm: createDummyImage("gray"),
+    foggy: createDummyImage("white"),
+    rainy: createDummyImage("blue")
   }
 };
 
@@ -37,4 +26,4 @@ window.getAsset = function(type, key) {
   return window.assets?.[type]?.[key] || null;
 };
 
-console.log("✅ ASSETS READY");
+console.log("✅ ASSETS READY (NO FILE DEPENDENCY)");
