@@ -1,4 +1,4 @@
-function renderLogin(){
+function renderLogin() {
   return `
     <h1>🦅 Falcon Game</h1>
     <input id="email" placeholder="email"><br><br>
@@ -8,9 +8,10 @@ function renderLogin(){
   `;
 }
 
-function renderHome(){
+// ================= HOME =================
 
-  if(!game.birds || game.birds.length === 0){
+function renderHome() {
+  if (!game.birdEntities || game.birdEntities.length === 0) {
     return `
       <h2>🦅 Welcome Commander</h2>
       <div class="panel">No birds loaded</div>
@@ -18,26 +19,22 @@ function renderHome(){
     `;
   }
 
-  let bird = game.birds[game.selected] || game.birds[0];
+  const entity = game.birdEntities[game.selected];
+  const bird = getBirdFromEntity(entity);
+
+  if (!bird) {
+    return `<h2>Error: Bird not found</h2>`;
+  }
 
   return `
     <h2>🦅 Welcome Commander</h2>
 
     <div class="panel">
+      Active Falcon: <b>${bird.name}</b>
+      <br><br>
 
-    Active Falcon:
-    <b>${bird.name}</b>
-
-    <br><br>
-
-    🌦 Weather:
-    <b>${game.weather?.type || "Clear"}</b>
-
-    <br>
-
-    🌡 Temperature:
-    <b>${game.weather?.temperature ?? 20}°C</b>
-
+      🌦 Weather: <b>${game.weather?.type || "Clear"}</b><br>
+      🌡 Temperature: <b>${game.weather?.temperature ?? 20}°C</b>
     </div>
 
     <div class="panel">
@@ -50,30 +47,32 @@ function renderHome(){
   `;
 }
 
-function renderBirds(){
+// ================= BIRDS =================
 
+function renderBirds() {
   let html = "<h2>🦅 Your Birds</h2>";
 
-  game.birds.forEach((b,i)=>{
+  game.birdEntities.forEach((entity, i) => {
+    const b = getBirdFromEntity(entity);
+
+    if (!b) return;
 
     html += `
       <div class="birdCard"
         onclick="selectBird(${i})"
         style="
-          background:${game.selected===i ? '#1e3a8a' : '#111827'};
+          background:${game.selected === i ? '#1e3a8a' : '#111827'};
           padding:10px;
           margin:8px;
           border-radius:12px;
-          box-shadow:0 0 10px rgba(59,130,246,0.2);
-          transition:0.2s;
           cursor:pointer;
         ">
 
         <b>${b.name}</b><br>
 
-        STR ${b.strength}
-        | AGI ${b.agility}
-        | INT ${b.intelligence}
+        STR ${b.stats?.strength ?? 0}
+        | AGI ${b.stats?.agility ?? 0}
+        | INT ${b.stats?.intelligence ?? 0}
 
         <br><br>
 
@@ -85,126 +84,66 @@ function renderBirds(){
     `;
   });
 
-  html += `
-    <br>
-    <button onclick="go('home')">
-      🏠 Back
-    </button>
-  `;
-
+  html += `<button onclick="go('home')">🏠 Back</button>`;
   return html;
 }
 
-function renderTraining(){
+// ================= TRAINING =================
 
-  if(!game.birds || game.birds.length === 0){
-    return `
-      <h2>No Birds</h2>
-      <button onclick="go('home')">
-  🏠 Back
-</button>
-    `;
-  }
+function renderTraining() {
+  const entity = game.birdEntities?.[game.selected];
+  const b = getBirdFromEntity(entity);
 
-  const b = game.birds[game.selected];
-
-  if(!b){
+  if (!b) {
     return `
       <h2>Select a Bird First</h2>
       <button onclick="go('birds')">Back</button>
     `;
   }
- 
+
   return `
     <h2>🏋️ Falcon Training</h2>
 
-    <div class="panel" id="trainingPanel">
-
+    <div class="panel">
       <h3>${b.name}</h3>
 
-      Strength: ${b.strength}<br>
-      Agility: ${b.agility}<br>
-      Intelligence: ${b.intelligence}<br>
-      Stamina: ${b.stamina}<br>
-      Charm: ${b.charm}<br>
+      Strength: ${b.stats.strength}<br>
+      Agility: ${b.stats.agility}<br>
+      Intelligence: ${b.stats.intelligence}<br>
+      Stamina: ${b.stats.stamina}<br>
+      Charm: ${b.stats.charm}<br>
 
       <br>
 
-      <h3>SAFE TRAINING</h3>
-
-      <button onclick="trainBird('strength','short')">
-        💪 Short Strength
-      </button>
-
-      <button onclick="trainBird('agility','short')">
-        ⚡ Short Acrobatics
-      </button>
-
-      <button onclick="trainBird('stamina','short')">
-        ❤️ Short Endurance
-      </button>
-
-      <button onclick="trainBird('charm','short')">
-        🎵 Short Singing
-      </button>
-
-      <br><br>
-
-      <h3>INTENSIVE TRAINING</h3>
-
-      <button onclick="trainBird('strength','intensive')">
-        🔥 Intensive Strength
-      </button>
-
-      <button onclick="trainBird('agility','intensive')">
-        🔥 Intensive Acrobatics
-      </button>
-
-      <button onclick="trainBird('stamina','intensive')">
-        🔥 Intensive Endurance
-      </button>
-
-      <button onclick="trainBird('charm','intensive')">
-        🔥 Intensive Singing
-      </button>
-
+      <button onclick="trainBird('strength','short')">💪 Strength</button>
+      <button onclick="trainBird('agility','short')">⚡ Agility</button>
+      <button onclick="trainBird('stamina','short')">❤️ Stamina</button>
+      <button onclick="trainBird('charm','short')">🎵 Charm</button>
     </div>
 
-    <button onclick="go('home')">
-      🏠 Back
-    </button>
-    
+    <button onclick="go('home')">🏠 Back</button>
   `;
 }
 
-function renderBreeding(){
+// ================= BREEDING =================
 
-  let html = `
-    <h2>🧬 Falcon Breeding</h2>
+function renderBreeding() {
+  let html = `<h2>🧬 Falcon Breeding</h2><div class="panel">`;
 
-    <div class="panel">
-  `;
-
-  game.birds.forEach((b,i)=>{
+  game.birdEntities.forEach((entity, i) => {
+    const b = getBirdFromEntity(entity);
+    if (!b) return;
 
     html += `
       <div class="birdCard"
         onclick="selectBird(${i})"
-        style="
-          background:${game.selected===i ? '#1e3a8a' : '#111827'};
-          padding:10px;
-          margin:8px;
-          border-radius:12px;
-          box-shadow:0 0 10px rgba(59,130,246,0.2);
-          transition:0.2s;
-          cursor:pointer;
-        ">
+        style="background:${game.selected === i ? '#1e3a8a' : '#111827'}">
 
         <b>${b.name}</b><br>
 
-        STR ${b.strength}
-        | AGI ${b.agility}
-        | INT ${b.intelligence}
+        STR ${b.stats.strength}
+        | AGI ${b.stats.agility}
+        | INT ${b.stats.intelligence}
 
         <br><br>
 
@@ -216,59 +155,17 @@ function renderBreeding(){
     `;
   });
 
-  html += `
-    </div>
-
-    <button onclick="go('home')">
-      🏠 Back
-    </button>
-  `;
-
+  html += `</div><button onclick="go('home')">🏠 Back</button>`;
   return html;
 }
 
-function renderRiskBar(risk){
+// ================= FEEDING =================
 
-  const percent = Math.min(100, Math.floor(risk * 100));
+function renderFeeding() {
+  const entity = game.birdEntities?.[game.selected];
+  const b = getBirdFromEntity(entity);
 
-  let color = "#22c55e"; // green safe
-
-  if(percent > 30) color = "#f59e0b"; // orange warning
-  if(percent > 60) color = "#ef4444"; // red danger
-
-  return `
-    <div style="margin-top:6px;">
-      <div style="
-        width:100%;
-        height:8px;
-        background:rgba(255,255,255,0.08);
-        border-radius:999px;
-        overflow:hidden;
-      ">
-        <div style="
-          width:${percent}%;
-          height:100%;
-          background:${color};
-          transition:0.3s;
-        "></div>
-      </div>
-
-      <small style="opacity:0.8;">
-        Injury Risk: ${percent}%
-      </small>
-    </div>
-  `;
-}
-
-window.addEventListener("error", (e)=>{
-  console.log("Game Error:", e.message);
-});
-
-function renderFeeding(){
-
-  const b = game.birds[game.selected];
-
-  if(!b){
+  if (!b) {
     return `
       <h2>No Bird Selected</h2>
       <button onclick="go('birds')">Back</button>
@@ -279,81 +176,56 @@ function renderFeeding(){
     <h2>🍖 Feeding Station</h2>
 
     <div class="panel">
-
       <h3>${b.name}</h3>
 
-      Strength: ${b.strength}<br>
-      Stamina: ${b.stamina}<br>
-      Charm: ${b.charm}<br>
+      Strength: ${b.stats.strength}<br>
+      Stamina: ${b.stats.stamina}<br>
+      Charm: ${b.stats.charm}<br>
 
       <br>
 
-      <button onclick="feedBird('protein')">
-        🍗 Protein Feed
-      </button>
-
-      <button onclick="feedBird('seeds')">
-        🌾 Seeds
-      </button>
-
-      <button onclick="feedBird('fruits')">
-        🍎 Fruits
-      </button>
-
+      <button onclick="feedBird('protein')">🍗 Protein</button>
+      <button onclick="feedBird('seeds')">🌾 Seeds</button>
+      <button onclick="feedBird('fruits')">🍎 Fruits</button>
     </div>
 
-    <button onclick="go('home')">
-      🏠 Back
-    </button>
+    <button onclick="go('home')">🏠 Back</button>
   `;
 }
 
-function renderCompetition(){
+// ================= COMPETITION =================
 
-  const b = game.birds[game.selected];
+function renderCompetition() {
+  const entity = game.birdEntities?.[game.selected];
+  const b = getBirdFromEntity(entity);
 
-  if(!b){
-    return `
-      <h2>No Bird Selected</h2>
-      <button onclick="go('home')">
-  🏠 Back
-</button>
-    `;
+  if (!b) {
+    return `<h2>No Bird Selected</h2><button onclick="go('home')">Back</button>`;
   }
 
   return `
-    <h2>🏆 Falcon Competitions</h2>
+    <h2>🏆 Competition</h2>
 
     <div class="panel">
-
       <h3>${b.name}</h3>
 
-      Strength: ${b.strength}<br>
-      Agility: ${b.agility}<br>
-      Intelligence: ${b.intelligence}<br>
-      Stamina: ${b.stamina}<br>
-      Charm: ${b.charm}<br>
+      Strength: ${b.stats.strength}<br>
+      Agility: ${b.stats.agility}<br>
+      Intelligence: ${b.stats.intelligence}<br>
+      Stamina: ${b.stats.stamina}<br>
+      Charm: ${b.stats.charm}<br>
 
       <br>
 
-      <button onclick="startCompetition('local')">
-        🥉 Local Competition
-      </button>
-
-      <button onclick="startCompetition('regional')">
-        🥈 Regional Competition
-      </button>
-
-      <button onclick="startCompetition('national')">
-        🥇 National Competition
-      </button>
-
+      <button onclick="startCompetition('local')">🥉 Local</button>
+      <button onclick="startCompetition('regional')">🥈 Regional</button>
+      <button onclick="startCompetition('national')">🥇 National</button>
     </div>
 
-    <button onclick="go('home')">
-      🏠 Back
-    </button>
+    <button onclick="go('home')">🏠 Back</button>
   `;
 }
+
+// ================= UI ENTRY =================
 
 renderUI();
