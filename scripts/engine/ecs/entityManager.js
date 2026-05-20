@@ -58,9 +58,15 @@ function removeEntity(entityId) {
 
 function addComponent(entityId, componentName, data) {
 
+  // ensure component bucket exists
   if (!ECS.components[componentName]) {
-
     ECS.components[componentName] = new Map();
+  }
+
+  // prevent overwriting undefined entities
+  if (!ECS.entities.has(entityId)) {
+    console.warn("Trying to add component to missing entity:", entityId);
+    return;
   }
 
   ECS.components[componentName].set(entityId, data);
@@ -147,6 +153,8 @@ function createEntity() {
 
 function removeEntity(entityId) {
 
+  if (!ECS.entities.has(entityId)) return;
+
   ECS.entities.delete(entityId);
 
   for (const componentName in ECS.components) {
@@ -218,3 +226,9 @@ function getEntitiesWith(...componentNames) {
   return results;
 }
 
+// =============================
+// GLOBAL EXPORT (IMPORTANT)
+// =============================
+
+window.ECS = ECS;
+window.COMPONENTS = COMPONENTS;
