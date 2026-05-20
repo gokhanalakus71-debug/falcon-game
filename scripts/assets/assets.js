@@ -1,32 +1,32 @@
-console.log("🔥 ASSETS FILE STARTED");
+console.log("🔥 ASSETS STARTED");
 
-try {
+const assets = { background: {} };
 
-  const assets = {
-    background: {}
-  };
-
-  function loadImage(src) {
-    const img = new Image();
-    img.src = src;
-    return img;
-  }
-
-  function getAsset(type, key) {
-    return assets?.[type]?.[key] ?? null;
-  }
-
-  assets.background.sunny = loadImage("assets/bg/sunny.png");
-
-  console.log("🔥 BEFORE EXPORT");
-
-  window.getAsset = getAsset;
-  window.assets = assets;
-
-  console.log("✅ EXPORT DONE");
-
-} catch (err) {
-  console.error("💥 ASSETS ERROR:", err);
+function loadImage(src) {
+  const img = new Image();
+  img.src = src;
+  return img;
 }
 
+function getAsset(type, key) {
+  console.log("getAsset called:", type, key);
+  return assets?.[type]?.[key] ?? null;
+}
+
+// preload (SAFE VERSION)
+try {
+  assets.background.sunny = loadImage("assets/bg/sunny.png");
+  assets.background.storm = loadImage("assets/bg/storm.png");
+
+  console.log("🔥 PRELOAD DONE");
+} catch (e) {
+  console.error("❌ IMAGE LOAD ERROR:", e);
+}
+
+console.log("🔥 BEFORE EXPORT");
+
+// 🔴 CRITICAL LINE
 window.getAsset = getAsset;
+window.assets = assets;
+
+console.log("✅ ASSETS READY");
