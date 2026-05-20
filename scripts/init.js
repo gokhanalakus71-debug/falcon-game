@@ -2,6 +2,7 @@
 
 function initSystems() {
   registerSystem(birdMovementSystem);
+  registerSystem(birdRenderSystem);
 }
 
 // ensure ECS is ready

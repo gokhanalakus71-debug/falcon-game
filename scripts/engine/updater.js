@@ -1,3 +1,5 @@
 function update(dt) {
-  updateSystems(dt);
+  if (typeof updateSystems === "function") {
+    updateSystems(dt);
+  }
 }

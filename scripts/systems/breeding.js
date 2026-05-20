@@ -1,96 +1,67 @@
-// ================= BREEDING (ECS VERSION) =================
+// ================= BREEDING SYSTEM (CLEAN ECS) =================
 
 function breed(i) {
 
-  const parentA = game.birdEntities?.[game.selected];
-  const parentB = game.birdEntities?.[i];
-
-  if (!parentA || !parentB) {
-    floatText("Select valid birds", "orange");
+  if (!game.birdEntities || game.birdEntities.length < 2) {
+    alert("Not enough birds to breed");
     return;
   }
 
   if (i === game.selected) {
-    floatText("Select another bird", "orange");
+    alert("Select another bird");
     return;
   }
 
-  const p1 = getBirdFromEntity(parentA);
-  const p2 = getBirdFromEntity(parentB);
+  const parentA = game.birdEntities[game.selected];
+  const parentB = game.birdEntities[i];
 
-  if (!p1 || !p2) return;
+  if (!parentA || !parentB) return;
 
-  // ================= MUTATION =================
+  const statsA = getComponent(parentA, "stats");
+  const statsB = getComponent(parentB, "stats");
 
-  function mutate(avg) {
-    const m = Math.floor(Math.random() * 5) - 2;
-    return Math.max(1, avg + m);
-  }
+  const traitsA = getComponent(parentA, "traits")?.list || [];
+  const traitsB = getComponent(parentB, "traits")?.list || [];
+
+  const avg = (a, b) =>
+    Math.max(1, Math.floor((a + b) / 2 + (Math.random() * 4 - 2)));
+
+  const child = createEntity();
+
+  // ================= POSITION =================
+  addComponent(child, "position", {
+    x: 100 + Math.random() * 200,
+    y: 100 + Math.random() * 200
+  });
+
+  // ================= STATS =================
+  addComponent(child, "stats", {
+    strength: avg(statsA.strength, statsB.strength),
+    agility: avg(statsA.agility, statsB.agility),
+    intelligence: avg(statsA.intelligence, statsB.intelligence),
+    stamina: avg(statsA.stamina, statsB.stamina),
+    charm: avg(statsA.charm, statsB.charm)
+  });
 
   // ================= TRAITS =================
+  addComponent(child, "traits", {
+    list: [...new Set([...traitsA, ...traitsB])]
+  });
 
-  const combined = [...(p1.traits || []), ...(p2.traits || [])];
-  const unique = [...new Set(combined)];
-
-  const inherited = [];
-  const traitCount = 1 + Math.floor(Math.random() * 2);
-
-  for (let i = 0; i < traitCount; i++) {
-    if (!unique.length) break;
-
-    const t = unique[Math.floor(Math.random() * unique.length)];
-
-    if (t && !inherited.includes(t)) {
-      inherited.push(t);
-    }
-  }
-
-  // rare mutation
-  if (Math.random() < 0.2 && typeof RARE_TRAITS !== "undefined") {
-    const r = RARE_TRAITS[Math.floor(Math.random() * RARE_TRAITS.length)];
-    if (r && !inherited.includes(r)) inherited.push(r);
-
-    floatText("🧬 MUTATION!", "#a855f7");
-  }
-
-  // ================= RARITY =================
-
-  let rarity = "Common";
-  const roll = Math.random();
-
-  if (roll > 0.95) {
-    rarity = "Legendary";
-    inherited.push("Mythic");
-  } else if (roll > 0.8) {
-    rarity = "Rare";
-  }
-
-  // ================= CREATE ECS BIRD =================
-
-  const child = createBirdECS({
+  // ================= BIRD DATA =================
+  addComponent(child, "bird", {
     name: "Hybrid Falcon",
-    rarity,
+    rarity: "Common"
+  });
 
-    strength: mutate((p1.stats.strength + p2.stats.strength) / 2),
-    agility: mutate((p1.stats.agility + p2.stats.agility) / 2),
-    intelligence: mutate((p1.stats.intelligence + p2.stats.intelligence) / 2),
-    stamina: mutate((p1.stats.stamina + p2.stats.stamina) / 2),
-    charm: mutate((p1.stats.charm + p2.stats.charm) / 2),
-
-    traits: inherited,
-
-    x: 100 + Math.random() * 300,
-    y: 100 + Math.random() * 200,
-    vx: 2 + Math.random() * 2,
-    vy: (Math.random() - 0.5) * 1.5
+  // ================= CONDITION =================
+  addComponent(child, "condition", {
+    value: 100
   });
 
   game.birdEntities.push(child);
-
-  flashScreen("blue");
-  floatText(`🧬 ${rarity} FALCON!`, "#60a5fa");
-
   game.selected = game.birdEntities.length - 1;
 
+  floatText("🧬 New Falcon Born!", "#60a5fa");
   renderUI();
 }
