@@ -21,7 +21,10 @@ window.addEventListener("resize", resize);
 // ================= WORLD RENDER =================
 
 async function renderWorld() {
-  if (!game || !game.weather) return;
+
+  if (!window.game || !window.game.weather) return;
+
+  const game = window.game;
 
   // ================= BACKGROUND =================
 

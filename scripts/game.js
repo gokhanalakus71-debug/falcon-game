@@ -18,9 +18,9 @@ function floatText(text, color = "white") {
 
 // ================= GLOBAL STATE =================
 
-window.scene = "login";
+window.scene = window.scene || "login";
 
-window.game = {
+window.game = window.game || {
   user: null,
   birdEntities: [],
   selected: 0,
@@ -48,7 +48,7 @@ function login() {
     return;
   }
 
-  game.user = { email };
+  window.game.user = { email };
 
   // ================= CREATE FIRST ECS BIRD =================
   const birdEntity = createBird({
@@ -69,21 +69,23 @@ function login() {
     vy: (Math.random() - 0.5) * 1.5
   });
 
-  game.birdEntities = [birdEntity];
-  game.selected = 0;
+  window.game.birdEntities = [birdEntity];
+  window.game.selected = 0;
 
   // ================= DEBUG =================
   console.log("🐦 Created bird entity:", birdEntity);
   console.log("🐦 ECS entities:", window.ECS?.entities);
   console.log("🐦 Total ECS count:", window.ECS?.entities?.size);
 
-  go("home");
+  if (typeof go === "function") {
+    go("home");
+  }
 }
 
 // ================= SELECTED BIRD =================
 
 function getSelectedBird() {
-  const entity = game.birdEntities?.[game.selected];
+  const entity = window.game?.birdEntities?.[window.game.selected];
   if (!entity) return null;
 
   return getBirdFromEntity(entity);
@@ -126,10 +128,9 @@ window.addEventListener("error", (e) => {
   console.log("Game Error:", e.message);
 });
 
-// ================= GLOBAL EXPORTS =================
+// ================= EXPORTS =================
 
 window.floatText = floatText;
 window.login = login;
 window.getSelectedBird = getSelectedBird;
 window.getBirdFromEntity = getBirdFromEntity;
-
