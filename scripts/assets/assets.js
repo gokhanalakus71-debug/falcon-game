@@ -1,10 +1,12 @@
 // ================= ASSET SYSTEM =================
 
+console.log("🔥 ASSETS.JS EXECUTING");
+
 const assets = {
   background: {}
 };
 
-// ================= LOAD IMAGE =================
+// ================= IMAGE LOADER =================
 
 function loadImage(src) {
   const img = new Image();
@@ -15,21 +17,19 @@ function loadImage(src) {
 // ================= GET ASSET =================
 
 function getAsset(type, key) {
-  return assets[type]?.[key] || null;
+  return assets?.[type]?.[key] ?? null;
 }
 
-// ================= INIT ASSETS =================
+// ================= PRELOAD =================
 
-function initAssets() {
-  assets.background.sunny = loadImage("assets/bg/sunny.png");
-  assets.background.storm = loadImage("assets/bg/storm.png");
-  assets.background.foggy = loadImage("assets/bg/foggy.png");
-  assets.background.rainy = loadImage("assets/bg/rainy.png");
-}
+assets.background.sunny = loadImage("assets/bg/sunny.png");
+assets.background.storm = loadImage("assets/bg/storm.png");
+assets.background.foggy = loadImage("assets/bg/foggy.png");
+assets.background.rainy = loadImage("assets/bg/rainy.png");
 
-initAssets();
-
-// ================= CRITICAL GLOBAL EXPORT =================
+// ================= CRITICAL EXPORT =================
 
 window.assets = assets;
 window.getAsset = getAsset;
+
+console.log("✅ ASSETS READY:", typeof window.getAsset);
