@@ -18,7 +18,7 @@ function floatText(text, color = "white") {
 
 // ================= GLOBAL STATE =================
 
-window.scene = window.scene || "login";
+window.scene = "login";
 
 window.game = window.game || {
   user: null,

@@ -34,9 +34,9 @@ async function renderWorld() {
   if (game.weather.type === "Foggy") bgKey = "foggy";
   if (game.weather.type === "Rainy") bgKey = "rainy";
 
-  const bg = await window.getAsset("background", bgKey);
+  const bg = window.getAsset("background", bgKey);
 
-  if (bg && bg.complete && bg.naturalWidth > 0) {
+if (bg && bg.complete && bg.naturalWidth > 0) {
   ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
 } else {
   ctx.fillStyle = "#0f172a";

@@ -1,4 +1,4 @@
-console.log("🔥 ASSETS START LOADED");
+console.log("🔥 ASSETS LOADING...");
 
 function loadImage(src) {
   const img = new Image();
@@ -18,12 +18,18 @@ function loadImage(src) {
   return img;
 }
 
+// ================= ASSET REGISTRY =================
+
 window.assets = {
   background: {
-    sunny: loadImage("assets/sunny.png"),
-    storm: loadImage("assets/storm.png"),
-    foggy: loadImage("assets/foggy.png"),
-    rainy: loadImage("assets/rainy.png")
+    sunny: loadImage("https://picsum.photos/1280/720?random=1"),
+    storm: loadImage("https://picsum.photos/1280/720?random=2"),
+    foggy: loadImage("https://picsum.photos/1280/720?random=3"),
+    rainy: loadImage("https://picsum.photos/1280/720?random=4")
+  },
+
+  bird: {
+    default: loadImage("https://dummyimage.com/256x256/1e3a8a/ffffff.png&text=Bird")
   }
 };
 

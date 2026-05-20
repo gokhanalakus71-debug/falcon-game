@@ -14,3 +14,5 @@ function renderUI() {
     scene === "competition" ? renderCompetition() :
     renderHome();
 }
+
+window.renderUI = renderUI;
