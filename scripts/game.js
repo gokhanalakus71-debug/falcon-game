@@ -19,7 +19,7 @@ let scene = "login";
 
 let game = {
   user: null,
-  birds: [],
+  birdEntities: [],
   selected: 0,
 
   shake: 0,
@@ -37,6 +37,25 @@ let game = {
   }
 };
 
+function getSelectedBird() {
+
+  const entity =
+    game.birdEntities?.[game.selected];
+
+  if (!entity) return null;
+
+  return {
+    entity,
+
+    position: getComponent(entity, "position"),
+    velocity: getComponent(entity, "velocity"),
+    stats: getComponent(entity, "stats"),
+    condition: getComponent(entity, "condition"),
+    traits: getComponent(entity, "traits"),
+    animation: getComponent(entity, "animation"),
+    bird: getComponent(entity, "bird")
+  };
+}
 
 function login(){
   const email = document.getElementById("email").value;
@@ -48,39 +67,26 @@ function login(){
 
   game.user = { email };
 
-  game.birds = [
-{
-  name:"Falcon A",
+const bird = createBird({
+  name: "Falcon A",
+  rarity: "Common",
 
-  condition:100,
+  strength: 5,
+  agility: 5,
+  intelligence: 5,
+  stamina: 5,
+  charm: 5,
 
-  strength:5,
-  agility:5,
-  intelligence:5,
-  stamina:5,
-  charm:5,
+  traits: ["Fast Learner"],
 
-  feedCount:0,
+  x: 100,
+  y: 200,
 
-  traits:["Fast Learner"],
+  vx: 2 + Math.random() * 2,
+  vy: (Math.random() - 0.5) * 1.5
+});
 
-  rarity:"Common",
-
-  x:100,
-y:200,
-
-vx:2 + Math.random()*2,
-vy:(Math.random()-0.5)*1.5,
-
-wingPhase: Math.random()*10,
-bobOffset: Math.random()*100,
-
-// 🦅 NEW ANIMATION STATE
-frame: 0,
-frameTimer: 0,
-frameSpeed: 6
-}
-];
+game.birdEntities = [bird];
 
   game.selected = 0;
 
