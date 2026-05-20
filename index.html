@@ -203,19 +203,19 @@ h1, h2 {
 
 <!-- ================= CORE ================= -->
 
-<script src="scripts/assets.js"></script>
+<script src="scripts/assets/assets.js"></script>
 
-<!-- IMPORTANT: confirm asset loads first -->
 <script>
   console.log("ASSETS READY:", typeof window.getAsset);
 </script>
 
-<script src="scripts/game.js"></script>
+<script src="game.js"></script>
 
 <!-- ================= ECS ================= -->
 
 <script src="scripts/ecs/ecsManager.js"></script>
 <script src="scripts/ecs/birdECS.js"></script>
+<script src="scripts/ecs/birdFactory.js"></script>
 
 <!-- ================= ENGINE ================= -->
 
@@ -225,6 +225,8 @@ h1, h2 {
 
 <!-- ================= SYSTEMS ================= -->
 
+<script src="scripts/systems/birdMovementSystem.js"></script>
+<script src="scripts/systems/birdRenderSystems.js"></script>
 <script src="scripts/systems/weather.js"></script>
 <script src="scripts/systems/training.js"></script>
 <script src="scripts/systems/breeding.js"></script>
@@ -233,12 +235,13 @@ h1, h2 {
 
 <!-- ================= INIT ================= -->
 
-<script src="scripts/init.js"></script>
+<script src="initially.js"></script>
 
 <!-- ================= UI ================= -->
 
-<script src="scripts/screens/ui.js"></script>
 <script src="scripts/ui/components.js"></script>
+<script src="scripts/ui/ui.js"></script>
+<script src="scripts/ui/render.js"></script>
 
 <!-- ================= START ================= -->
 
