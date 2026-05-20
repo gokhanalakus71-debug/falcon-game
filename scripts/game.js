@@ -67,7 +67,7 @@ function login(){
 
   game.user = { email };
 
-const bird = createBird({
+const birdEntity = createBirdECS({
   name: "Falcon A",
   rarity: "Common",
 
@@ -81,14 +81,12 @@ const bird = createBird({
 
   x: 100,
   y: 200,
-
   vx: 2 + Math.random() * 2,
   vy: (Math.random() - 0.5) * 1.5
 });
 
-game.birdEntities = [bird];
-
-  game.selected = 0;
+game.birdEntities = [birdEntity];
+game.selected = 0;
 
   go("home");
 }
