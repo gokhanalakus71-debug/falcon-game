@@ -18,14 +18,18 @@ function getAsset(type, key) {
   return assets[type]?.[key] || null;
 }
 
-// ================= INIT BACKGROUNDS =================
+// ================= INIT ASSETS =================
 
-assets.background.sunny = loadImage("assets/bg/sunny.png");
-assets.background.storm = loadImage("assets/bg/storm.png");
-assets.background.foggy = loadImage("assets/bg/foggy.png");
-assets.background.rainy = loadImage("assets/bg/rainy.png");
+function initAssets() {
+  assets.background.sunny = loadImage("assets/bg/sunny.png");
+  assets.background.storm = loadImage("assets/bg/storm.png");
+  assets.background.foggy = loadImage("assets/bg/foggy.png");
+  assets.background.rainy = loadImage("assets/bg/rainy.png");
+}
 
-// ================= GLOBAL EXPORT =================
+initAssets();
 
-window.getAsset = getAsset;
+// ================= CRITICAL GLOBAL EXPORT =================
+
 window.assets = assets;
+window.getAsset = getAsset;

@@ -202,23 +202,19 @@ h1, h2 {
 <div id="ui"></div>
 
 <!-- ================= CORE ================= -->
-
 <script src="scripts/assets.js"></script>
 <script src="scripts/game.js"></script>
 
 <!-- ================= ECS ================= -->
-
 <script src="scripts/ecs/ecsManager.js"></script>
 <script src="scripts/ecs/birdECS.js"></script>
 
 <!-- ================= ENGINE ================= -->
-
 <script src="scripts/engine/updater.js"></script>
 <script src="scripts/engine/world.js"></script>
 <script src="scripts/engine/loop.js"></script>
 
 <!-- ================= SYSTEMS ================= -->
-
 <script src="scripts/systems/weather.js"></script>
 <script src="scripts/systems/training.js"></script>
 <script src="scripts/systems/breeding.js"></script>
@@ -226,22 +222,17 @@ h1, h2 {
 <script src="scripts/systems/birds.js"></script>
 
 <!-- ================= INIT ================= -->
-
 <script src="scripts/init.js"></script>
 
 <!-- ================= UI ================= -->
-
 <script src="scripts/screens/ui.js"></script>
 <script src="scripts/ui/components.js"></script>
 
 <!-- ================= START ENGINE ================= -->
-
 <script>
-  startEngine();
-</script>
-
-<script>
-  startEngine();
+  window.addEventListener("load", () => {
+    startEngine();
+  });
 </script>
 
 </body>
