@@ -34,7 +34,7 @@ const RARE_TRAITS = [
 // ===================== TRAINING =====================
 
 function trainBird(stat, type) {
-  const b = game.birds?.[game.selected];
+  const b = game.birdEntities?.[game.selected];
 
   if (!b) {
     floatText("Select a bird first", "orange");
@@ -111,7 +111,7 @@ function getTraitValue(b, key, base = 1) {
 // ===================== FEEDING =====================
 
 function feedBird(food) {
-  const b = game.birds?.[game.selected];
+  const b = game.birdEntities?.[game.selected];
 
   if (!b) {
     floatText("Select a bird first", "orange");
@@ -173,7 +173,7 @@ function feedBird(food) {
 setInterval(() => {
   if (scene !== "home") return;
 
-  (game.birds || []).forEach(b => {
+  (game.birdEntities || []).forEach(b => {
     b.condition = clamp((b.condition ?? 100) + 0.05, 0, 100);
     b.feedCount = Math.max(0, (b.feedCount || 0) - 1);
   });

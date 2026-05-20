@@ -95,7 +95,7 @@ async function renderWorld(){
     return;
   }
 
-  for (const b of game.birds || []) {
+  for (const b of game.birdEntities || []) {
 
     // ---------- SAFETY DEFAULTS ----------
     b.x ??= Math.random() * canvas.width;

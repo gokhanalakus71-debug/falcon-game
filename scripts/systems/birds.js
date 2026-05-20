@@ -1,19 +1,12 @@
-// ================= BIRDS =================
-
-function selectBird(i){
-
-  if(!game.birds || !game.birds[i]){
-    return;
-  }
+function selectBird(i) {
+  if (!game.birdEntities?.[i]) return;
 
   game.selected = i;
 
   const cards = document.querySelectorAll(".birdCard");
-
   const card = cards?.[i];
 
-  if(card){
-
+  if (card) {
     card.style.transform = "scale(1.08)";
     card.style.boxShadow = "0 0 20px rgba(59,130,246,0.6)";
 

@@ -2,7 +2,7 @@
 
 function breed(i){
 
-  if(!game.birds || game.birds.length < 2){
+  if(!game.birdEntities || game.birdEntities.length < 2){
     alert("Not enough birds to breed");
     return;
   }
@@ -12,8 +12,8 @@ function breed(i){
     return;
   }
 
-  let p1 = game.birds[game.selected];
-  let p2 = game.birds[i];
+  let p1 = game.birdEntities[game.selected];
+  let p2 = game.birdEntities[i];
 
   if(!p1 || !p2){
     return;
@@ -204,7 +204,7 @@ function breed(i){
 
   flashScreen("blue");
 
-  game.birds.push(child);
+  game.birdEntities.push(child);
 
   floatText(
     "🧬 " + rarity + " FALCON!",
@@ -212,7 +212,7 @@ function breed(i){
   );
 
   game.selected =
-    game.birds.length - 1;
+    game.birdEntities.length - 1;
 
   renderUI();
 }

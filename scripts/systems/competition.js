@@ -1,6 +1,6 @@
 function startCompetition(level){
 
-  let player = game.birds[game.selected];
+  let player = game.birdEntities[game.selected];
 
   if(!player){
     alert("No bird selected");
