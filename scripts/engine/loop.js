@@ -37,12 +37,16 @@ function gameLoop(timestamp = 0) {
     accumulator -= FIXED_TIMESTEP;
   }
 
-  // =====================
-  // RENDER
-  // =====================
+  // ================= RENDER =================
 
-  renderWorld();
-  renderUI();
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+// ECS BIRD RENDERING (NEW)
+birdRenderSystem(ctx);
+
+// UI/world overlay (optional legacy)
+renderWorld();
+renderUI();
 
   requestAnimationFrame(gameLoop);
 }
