@@ -147,4 +147,9 @@ if (bg && bg.complete && bg.naturalWidth > 0) {
       anim.frameTimer = 0;
     }
   }
+
+  window.__ctx = ctx;
+window.__birdImg = new Image();
+window.__birdImg.src = "https://i.imgur.com/your-sprite.png";
+
 }
