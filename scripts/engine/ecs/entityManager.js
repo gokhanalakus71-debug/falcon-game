@@ -232,3 +232,17 @@ function getEntitiesWith(...componentNames) {
 
 window.ECS = ECS;
 window.COMPONENTS = COMPONENTS;
+
+// =============================
+// GLOBAL EXPORTS (FIX FOR BROWSER)
+// =============================
+
+window.ECS = ECS;
+window.COMPONENTS = COMPONENTS;
+
+window.createEntity = createEntity;
+window.removeEntity = removeEntity;
+window.addComponent = addComponent;
+window.getComponent = getComponent;
+window.removeComponent = removeComponent;
+window.getEntitiesWith = getEntitiesWith;
