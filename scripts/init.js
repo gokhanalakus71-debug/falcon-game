@@ -1,19 +1,20 @@
-// ================= INIT ECS SYSTEMS =================
+// ================= INIT ECS =================
 
 function initSystems() {
   registerSystem(birdMovementSystem);
   registerSystem(birdRenderSystem);
 }
 
-// ensure ECS is ready
 window.addEventListener("load", initSystems);
 
-// ================= SYSTEM REGISTRY =================
+// ================= SYSTEM STORAGE =================
 
-const SYSTEMS = [
-  birdMovementSystem
-];
+window.SYSTEMS = window.SYSTEMS || [];
+
+function registerSystem(system) {
+  window.SYSTEMS.push(system);
+}
 
 function updateSystems(dt) {
-  SYSTEMS.forEach(sys => sys(dt));
+  window.SYSTEMS.forEach(sys => sys(dt));
 }
