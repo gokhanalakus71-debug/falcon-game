@@ -132,3 +132,6 @@ window.floatText = floatText;
 window.login = login;
 window.getSelectedBird = getSelectedBird;
 window.getBirdFromEntity = getBirdFromEntity;
+
+window.scene = window.scene;
+window.game = window.game;

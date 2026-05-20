@@ -171,7 +171,7 @@ function feedBird(food) {
 // ===================== RECOVERY =====================
 
 setInterval(() => {
-  if (scene !== "home") return;
+  if (window.scene !== "home") return;
 
   (game.birdEntities || []).forEach(b => {
     b.condition = clamp((b.condition ?? 100) + 0.05, 0, 100);
