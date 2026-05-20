@@ -1,35 +1,30 @@
-// ================= ASSET SYSTEM =================
+console.log("🔥 ASSETS FILE STARTED");
 
-console.log("🔥 ASSETS.JS EXECUTING");
+try {
 
-const assets = {
-  background: {}
-};
+  const assets = {
+    background: {}
+  };
 
-// ================= IMAGE LOADER =================
+  function loadImage(src) {
+    const img = new Image();
+    img.src = src;
+    return img;
+  }
 
-function loadImage(src) {
-  const img = new Image();
-  img.src = src;
-  return img;
+  function getAsset(type, key) {
+    return assets?.[type]?.[key] ?? null;
+  }
+
+  assets.background.sunny = loadImage("assets/bg/sunny.png");
+
+  console.log("🔥 BEFORE EXPORT");
+
+  window.getAsset = getAsset;
+  window.assets = assets;
+
+  console.log("✅ EXPORT DONE");
+
+} catch (err) {
+  console.error("💥 ASSETS ERROR:", err);
 }
-
-// ================= GET ASSET =================
-
-function getAsset(type, key) {
-  return assets?.[type]?.[key] ?? null;
-}
-
-// ================= PRELOAD =================
-
-assets.background.sunny = loadImage("assets/bg/sunny.png");
-assets.background.storm = loadImage("assets/bg/storm.png");
-assets.background.foggy = loadImage("assets/bg/foggy.png");
-assets.background.rainy = loadImage("assets/bg/rainy.png");
-
-// ================= CRITICAL EXPORT =================
-
-window.assets = assets;
-window.getAsset = getAsset;
-
-console.log("✅ ASSETS READY:", typeof window.getAsset);
