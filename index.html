@@ -201,26 +201,31 @@ h1, h2 {
 
 <div id="ui"></div>
 
-<!-- ================= CORE ================= -->
-
+<!-- ================= 1. CORE STATE ================= -->
 <script src="scripts/game.js"></script>
+
+<!-- ================= 2. ASSETS ================= -->
 <script src="scripts/assets/assets.js"></script>
-<script src="scripts/assets/spriteLoader.js"></script>
 
-<!-- ================= ECS ================= -->
+<!-- wait until assets exist -->
+<script>
+  window.__ASSETS_READY = false;
 
+  const checkAssets = setInterval(() => {
+    if (window.getAsset) {
+      window.__ASSETS_READY = true;
+      console.log("✅ ASSETS READY");
+      clearInterval(checkAssets);
+    }
+  }, 50);
+</script>
+
+<!-- ================= 3. ECS CORE ================= -->
 <script src="scripts/ecs/ecsManager.js"></script>
 <script src="scripts/ecs/birdECS.js"></script>
 <script src="scripts/ecs/birdFactory.js"></script>
 
-<!-- ================= ENGINE ================= -->
-
-<script src="scripts/engine/updater.js"></script>
-<script src="scripts/engine/world.js"></script>
-<script src="scripts/engine/loop.js"></script>
-
-<!-- ================= SYSTEMS ================= -->
-
+<!-- ================= 4. SYSTEMS ================= -->
 <script src="scripts/systems/birdMovementSystem.js"></script>
 <script src="scripts/systems/birdRenderSystems.js"></script>
 <script src="scripts/systems/weather.js"></script>
@@ -229,33 +234,40 @@ h1, h2 {
 <script src="scripts/systems/competition.js"></script>
 <script src="scripts/systems/birds.js"></script>
 
-<!-- ================= INIT ================= -->
+<!-- ================= 5. ENGINE ================= -->
+<script src="scripts/engine/updater.js"></script>
+<script src="scripts/engine/world.js"></script>
+<script src="scripts/engine/loop.js"></script>
 
-<script src="scripts/init.js"></script>
-
-<!-- ================= UI ================= -->
-
+<!-- ================= 6. UI ================= -->
 <script src="scripts/ui/components.js"></script>
 <script src="scripts/ui/ui.js"></script>
 <script src="scripts/ui/render.js"></script>
 
-<!-- ================= START ================= -->
+<!-- ================= 7. INIT ================= -->
+<script src="scripts/initially.js"></script>
 
+<!-- ================= 8. START SAFE BOOT ================= -->
 <script>
-window.addEventListener("load", () => {
-  if (!window.getAsset) {
-    console.error("Assets not loaded");
-    return;
+  function bootGame() {
+    if (!window.game) {
+      console.warn("Waiting for game...");
+      setTimeout(bootGame, 50);
+      return;
+    }
+
+    if (!window.startEngine) {
+      console.warn("Engine not ready...");
+      setTimeout(bootGame, 50);
+      return;
+    }
+
+    console.log("🚀 GAME STARTING SAFE MODE");
+    startEngine();
   }
 
-  if (!window.game) {
-    console.error("Game not initialized");
-    return;
-  }
-
-  console.log("🚀 GAME BOOT SAFE START");
-  startEngine();
-});
+  window.addEventListener("load", bootGame);
+  
 </script>
 
 </body>

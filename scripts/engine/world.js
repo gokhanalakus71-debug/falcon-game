@@ -1,15 +1,22 @@
-// ================= CANVAS SETUP =================
+// ================= CANVAS SETUP (SAFE LAYER) =================
 
 const canvas = document.getElementById("world");
+const ctx = canvas?.getContext?.("2d");
 
-if (!canvas) throw new Error("Canvas not found");
+// ---------------- SAFETY CHECKS ----------------
 
-const ctx = canvas.getContext("2d");
+if (!canvas) {
+  console.error("❌ Canvas #world not found");
+}
 
-if (!ctx) throw new Error("2D context unavailable");
+if (!ctx) {
+  console.error("❌ 2D context unavailable");
+}
 
-window.worldCanvas = canvas;
-window.worldCtx = ctx;
+// ---------------- GLOBAL EXPORTS ----------------
+
+window.worldCanvas = canvas || null;
+window.worldCtx = ctx || null;
 
 // ================= RESIZE =================
 
