@@ -1,10 +1,20 @@
 console.log("🔥 ASSETS START LOADED");
 
-window.getAsset = function(type, key) {
-  console.log("GET ASSET CALLED", type, key);
-  return "OK";
+window.assets = {
+  background: {
+    sunny: new Image(),
+    storm: new Image(),
+    foggy: new Image()
+  }
 };
 
-window.assets = {};
+// preload (IMPORTANT)
+window.assets.background.sunny.src = "assets/sunny.png";
+window.assets.background.storm.src = "assets/storm.png";
+window.assets.background.foggy.src = "assets/foggy.png";
 
-console.log("✅ ASSETS EXPORT DONE");
+window.getAsset = function(type, key) {
+  return window.assets?.[type]?.[key] || null;
+};
+
+console.log("✅ ASSETS READY");
