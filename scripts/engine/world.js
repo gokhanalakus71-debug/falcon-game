@@ -36,9 +36,12 @@ async function renderWorld() {
 
   const bg = await window.getAsset("background", bgKey);
 
-  if (bg?.complete) {
-    ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
-  }
+  if (bg && bg.complete && bg.naturalWidth > 0) {
+  ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+} else {
+  ctx.fillStyle = "#0f172a";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
 
   // ================= FOG OVERLAY =================
 
