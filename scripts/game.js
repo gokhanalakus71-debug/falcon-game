@@ -97,3 +97,21 @@ window.addEventListener("error", (e)=>{
   console.log("Game Error:", e.message);
 });
 
+const testEntity = createEntity();
+
+addComponent(
+  testEntity,
+  COMPONENTS.POSITION,
+  {
+    x: 100,
+    y: 200
+  }
+);
+
+console.log(
+  "ECS TEST",
+  getComponent(
+    testEntity,
+    COMPONENTS.POSITION
+  )
+);
