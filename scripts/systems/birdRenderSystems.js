@@ -1,54 +1,44 @@
-// ================= SPRITE BIRD RENDER SYSTEM =================
+// ================= BIRD RENDER SYSTEM =================
 
-function birdRenderSystem(ctx) {
+function birdRenderSystem(dt) {
+  const ctx = window.worldCtx;
 
-  const sprite = getSprite("bird");
+  if (!ctx) return;
 
   const entities = getEntitiesWith("position", "animation", "bird");
 
   for (const e of entities) {
-
     const pos = getComponent(e, "position");
     const anim = getComponent(e, "animation");
     const bird = getComponent(e, "bird");
-    const vel = getComponent(e, "velocity");
 
-    if (!pos || !anim || !bird) continue;
+    if (!pos || !anim) continue;
 
-    // ================= FALLBACK MODE =================
-    if (!sprite?.loaded) {
+    if (!window.birdImg || !window.birdImg.complete) continue;
 
-      ctx.fillStyle = "#60a5fa";
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y, 18, 0, Math.PI * 2);
-      ctx.fill();
+    const img = window.birdImg;
 
-      ctx.fillStyle = "white";
-      ctx.font = "10px system-ui";
-      ctx.textAlign = "center";
-      ctx.fillText(bird.name, pos.x, pos.y - 25);
-
-      continue;
-    }
-
-    // ================= SPRITE MODE =================
-
-    const frameWidth = sprite.frameWidth;
-    const frameHeight = sprite.frameHeight;
-
-    const frame = Math.floor(anim.frame || 0) % 4;
+    const frameWidth = img.width / 4;
+    const frameHeight = img.height;
 
     const size = 90 + Math.sin(anim.wingPhase || 0) * 10;
 
     ctx.save();
+
     ctx.translate(pos.x, pos.y);
 
-    // flip
-    if (vel?.vx < 0) ctx.scale(-1, 1);
+    const vel = getComponent(e, "velocity");
+    if (vel?.vx < 0) {
+      ctx.scale(-1, 1);
+    }
+
+    ctx.beginPath();
+    ctx.ellipse(0, 0, size * 0.35, size * 0.3, 0, 0, Math.PI * 2);
+    ctx.clip();
 
     ctx.drawImage(
-      sprite.sheet,
-      frame * frameWidth,
+      img,
+      (anim.frame || 0) * frameWidth,
       0,
       frameWidth,
       frameHeight,
@@ -59,16 +49,5 @@ function birdRenderSystem(ctx) {
     );
 
     ctx.restore();
-
-    // ================= ANIMATION =================
-    anim.wingPhase += 0.15;
-
-    anim.frameTimer = (anim.frameTimer || 0) + 1;
-    anim.frameSpeed = anim.frameSpeed || 6;
-
-    if (anim.frameTimer >= anim.frameSpeed) {
-      anim.frame = (anim.frame || 0) + 1;
-      anim.frameTimer = 0;
-    }
   }
 }

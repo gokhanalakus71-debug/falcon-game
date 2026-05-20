@@ -134,3 +134,6 @@ window.floatText = floatText;
 window.login = login;
 window.getSelectedBird = getSelectedBird;
 window.getBirdFromEntity = getBirdFromEntity;
+
+window.birdImg = new Image();
+window.birdImg.src = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Hawk_Silhouette.png";
