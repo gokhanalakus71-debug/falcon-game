@@ -1,21 +1,3 @@
-// ================= FLOAT TEXT =================
-
-function floatText(text, color = "white") {
-  const el = document.createElement("div");
-  el.className = "float";
-  el.innerText = text;
-
-  const x = window.innerWidth / 2 + (Math.random() * 100 - 50);
-  const y = window.innerHeight / 2 + (Math.random() * 60 - 30);
-
-  el.style.left = x + "px";
-  el.style.top = y + "px";
-  el.style.color = color;
-
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 1000);
-}
-
 // ================= GLOBAL STATE =================
 
 window.scene = "login";
@@ -37,6 +19,24 @@ window.game = window.game || {
     cancel: false
   }
 };
+
+// ================= FLOAT TEXT =================
+
+function floatText(text, color = "white") {
+  const el = document.createElement("div");
+  el.className = "float";
+  el.innerText = text;
+
+  const x = window.innerWidth / 2 + (Math.random() * 100 - 50);
+  const y = window.innerHeight / 2 + (Math.random() * 60 - 30);
+
+  el.style.left = x + "px";
+  el.style.top = y + "px";
+  el.style.color = color;
+
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
 
 // ================= LOGIN =================
 
