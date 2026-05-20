@@ -18,9 +18,9 @@ function floatText(text, color = "white") {
 
 // ================= GLOBAL STATE =================
 
-let scene = "login";
+window.scene = "login";
 
-let game = {
+window.game = {
   user: null,
   birdEntities: [],
   selected: 0,
@@ -125,3 +125,10 @@ function getBirdFromEntity(entity) {
 window.addEventListener("error", (e) => {
   console.log("Game Error:", e.message);
 });
+
+// ================= GLOBAL EXPORTS =================
+
+window.floatText = floatText;
+window.login = login;
+window.getSelectedBird = getSelectedBird;
+window.getBirdFromEntity = getBirdFromEntity;
