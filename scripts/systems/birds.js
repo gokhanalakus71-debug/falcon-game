@@ -24,5 +24,4 @@ function selectBird(i){
   }
 
   renderUI();
-  updateWorld();
 }

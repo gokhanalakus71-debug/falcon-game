@@ -1,9 +1,5 @@
 function update(dt) {
 
-  updateBirds(dt);
-
-  updateParticles(dt);
-
-  updateWeather(dt);
+  // future systems go here
 
 }
