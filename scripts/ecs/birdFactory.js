@@ -5,7 +5,6 @@ function createBird(data = {}) {
   // =====================
   // POSITION
   // =====================
-
   addComponent(entity, "position", {
     x: data.x ?? 100,
     y: data.y ?? 200
@@ -14,7 +13,6 @@ function createBird(data = {}) {
   // =====================
   // VELOCITY
   // =====================
-
   addComponent(entity, "velocity", {
     vx: data.vx ?? 2,
     vy: data.vy ?? 0
@@ -23,7 +21,6 @@ function createBird(data = {}) {
   // =====================
   // STATS
   // =====================
-
   addComponent(entity, "stats", {
     strength: data.strength ?? 5,
     agility: data.agility ?? 5,
@@ -33,9 +30,8 @@ function createBird(data = {}) {
   });
 
   // =====================
-  // CONDITION
+  // CONDITION (FIXED FLAT STRUCTURE)
   // =====================
-
   addComponent(entity, "condition", {
     value: data.condition ?? 100,
     feedCount: data.feedCount ?? 0
@@ -44,7 +40,6 @@ function createBird(data = {}) {
   // =====================
   // TRAITS
   // =====================
-
   addComponent(entity, "traits", {
     list: data.traits ?? []
   });
@@ -52,7 +47,6 @@ function createBird(data = {}) {
   // =====================
   // ANIMATION
   // =====================
-
   addComponent(entity, "animation", {
     frame: 0,
     frameTimer: 0,
@@ -64,7 +58,6 @@ function createBird(data = {}) {
   // =====================
   // SPRITE
   // =====================
-
   addComponent(entity, "sprite", {
     key: "bird",
     frame: 0,
@@ -73,4 +66,9 @@ function createBird(data = {}) {
     frameSpeed: 8,
     wingPhase: Math.random() * 10
   });
+
+  // =====================
+  // CRITICAL FIX
+  // =====================
+  return entity;
 }
