@@ -22,6 +22,6 @@ if (!window.__weatherIntervalStarted) {
   window.game.weather.type = random;
 }, 30000);
 
-window.weatherSystem = weatherSystem;
+  window.weatherSystem = weatherSystem;
 
 }
