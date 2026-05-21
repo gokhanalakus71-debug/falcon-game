@@ -1,19 +1,23 @@
+// ================= BIRD MOVEMENT SYSTEM (STABLE ECS VERSION) =================
+
 function birdMovementSystem(dt) {
-  const entities = getEntitiesWith("position", "velocity", "sprite");
+
+  const entities = getEntitiesWith("position", "velocity");
 
   for (const e of entities) {
 
     const pos = getComponent(e, "position");
     const vel = getComponent(e, "velocity");
-    const sprite = getComponent(e, "sprite");
 
-    if (!pos || !vel || !anim) continue;
+    if (!pos || !vel) continue;
 
-    pos.x += vel.vx * 60 * dt;
-    pos.y += vel.vy * 60 * dt;
-    
+    // ================= MOVEMENT =================
 
-    // simple AI drift
+    pos.x += (vel.vx || 0) * 60 * dt;
+    pos.y += (vel.vy || 0) * 60 * dt;
+
+    // ================= SIMPLE AI DRIFT =================
+
     if (Math.random() < 0.01) {
       vel.vy = (Math.random() - 0.5) * 3;
     }
@@ -44,3 +48,5 @@ function birdMovementSystem(dt) {
     }
   }
 }
+
+window.birdMovementSystem = birdMovementSystem;
