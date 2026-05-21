@@ -19,7 +19,8 @@ function birdMovementSystem(dt) {
     // ================= SIMPLE AI DRIFT =================
 
     if (Math.random() < 0.01) {
-      vel.vy = (Math.random() - 0.5) * 3;
+      vel.vx += (Math.random() - 0.5) * 0.5;
+      vel.vy += (Math.random() - 0.5) * 0.5;
     }
 
     // ================= WORLD BOUNDS =================
