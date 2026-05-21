@@ -14,7 +14,6 @@ window.addEventListener("load", () => {
 
   // CORE SYSTEMS
   safeRegister(birdMovementSystem, "birdMovementSystem");
-  safeRegister(birdRenderSystem, "birdRenderSystem");
   safeRegister(animationSystem, "animationSystem");
   safeRegister(weatherSystem, "weatherSystem");
 
