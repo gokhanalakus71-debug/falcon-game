@@ -37,3 +37,6 @@ function parallaxSystem(dt) {
     }
   }
 }
+
+window.parallaxSystem = parallaxSystem;
+window.initParallax = initParallax;

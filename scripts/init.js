@@ -2,15 +2,21 @@ window.addEventListener("load", () => {
 
   console.log("🚀 Registering systems");
 
-  registerSystem(cameraSystem);
+  if (typeof cameraSystem === "function") {
+    registerSystem(cameraSystem);
+  }
 
-  registerSystem(parallaxSystem);
-  
-  registerSystem(birdMovementSystem);
+  if (typeof parallaxSystem === "function") {
+    registerSystem(parallaxSystem);
+  }
 
-  registerSystem(animationSystem);
-  
+  if (typeof birdMovementSystem === "function") {
+    registerSystem(birdMovementSystem);
+  }
+
+  if (typeof birdRenderSystem === "function") {
+    registerSystem(birdRenderSystem);
+  }
+
   console.log("✅ Falcon Engine Started");
-
-  renderUI();
 });
