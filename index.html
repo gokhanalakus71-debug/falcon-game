@@ -228,35 +228,40 @@ h1, h2 {
 
 <!-- ================= ASSETS ================= -->
 <script src="scripts/assets/assets.js"></script>
+<script src="scripts/assets/spriteLoader.js"></script>
 
 <!-- ================= ECS ================= -->
 <script src="scripts/ecs/ecsManager.js"></script>
 <script src="scripts/ecs/birdECS.js"></script>
 <script src="scripts/ecs/birdFactory.js"></script>
 
-<!-- ================= ENGINE ================= -->
+<!-- ================= ENGINE CORE ================= -->
 <script src="scripts/engine/updater.js"></script>
 <script src="scripts/engine/world.js"></script>
 <script src="scripts/engine/loop.js"></script>
 
-<!-- ================= SYSTEMS ================= -->
-<script src="scripts/systems/cameraSystem.js"></script>
+<!-- ================= SYSTEMS (CORE FIRST) ================= -->
 <script src="scripts/systems/birdMovementSystem.js"></script>
+<script src="scripts/systems/birdRenderSystems.js"></script>
 <script src="scripts/systems/animationSystem.js"></script>
 <script src="scripts/systems/weather.js"></script>
+
+<!-- OPTIONAL SYSTEMS LAST -->
+<script src="scripts/systems/parallaxSystem.js"></script>
+<script src="scripts/systems/cameraSystem.js"></script>
+
 <script src="scripts/systems/training.js"></script>
 <script src="scripts/systems/breeding.js"></script>
 <script src="scripts/systems/competition.js"></script>
 <script src="scripts/systems/birds.js"></script>
-<script src="scripts/systems/parallaxSystem.js"></script>
 
 <!-- ================= UI ================= -->
 <script src="scripts/ui/components.js"></script>
 <script src="scripts/ui/navigation.js"></script>
-<script src="scripts/ui/render.js"></script>
 <script src="scripts/ui/ui.js"></script>
+<script src="scripts/ui/render.js"></script>
 
-<!-- ================= INIT ================= -->
+<!-- ================= INIT LAST ================= -->
 <script src="scripts/init.js"></script>
 
 </body>

@@ -1,34 +1,27 @@
+// ================= INIT SYSTEM REGISTRATION (SAFE) =================
+
 window.addEventListener("load", () => {
 
-  console.log("🚀 INIT START");
+  console.log("🚀 Registering systems");
 
-  try {
-
-    if (typeof registerSystem === "function") {
-
-      if (typeof birdMovementSystem === "function")
-        registerSystem(birdMovementSystem);
-
-      if (typeof birdRenderSystem === "function")
-        registerSystem(birdRenderSystem);
-
-      if (typeof parallaxSystem === "function")
-        registerSystem(parallaxSystem);
-
-      console.log("✅ SYSTEMS REGISTERED");
+  const safeRegister = (fn, name) => {
+    if (typeof fn === "function") {
+      registerSystem(fn);
+    } else {
+      console.warn(`⚠️ System missing: ${name}`);
     }
+  };
 
-    if (typeof renderUI === "function") {
-      renderUI();
-      console.log("✅ UI RENDERED");
-    }
+  // CORE SYSTEMS
+  safeRegister(birdMovementSystem, "birdMovementSystem");
+  safeRegister(birdRenderSystem, "birdRenderSystem");
+  safeRegister(animationSystem, "animationSystem");
+  safeRegister(weatherSystem, "weatherSystem");
 
-    if (typeof startEngine === "function") {
-      startEngine();
-      console.log("🚀 ENGINE STARTED");
-    }
+  // OPTIONAL SYSTEMS (MAY NOT EXIST YET)
+  safeRegister(parallaxSystem, "parallaxSystem");
+  safeRegister(cameraSystem, "cameraSystem");
 
-  } catch (e) {
-    console.error("❌ BOOT FAILURE:", e);
-  }
+  console.log("✅ Falcon Engine Started");
+
 });
