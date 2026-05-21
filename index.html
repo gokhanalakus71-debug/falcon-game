@@ -220,12 +220,23 @@ h1, h2 {
   }, 50);
 </script>
 
-<!-- ================= 3. ECS CORE ================= -->
+<!-- ================= CORE ================= -->
+<script src="scripts/game.js"></script>
+
+<!-- ================= ASSETS ================= -->
+<script src="scripts/assets/assets.js"></script>
+
+<!-- ================= ECS ================= -->
 <script src="scripts/ecs/ecsManager.js"></script>
 <script src="scripts/ecs/birdECS.js"></script>
 <script src="scripts/ecs/birdFactory.js"></script>
 
-<!-- ================= 4. SYSTEMS ================= -->
+<!-- ================= ENGINE ================= -->
+<script src="scripts/engine/updater.js"></script>
+<script src="scripts/engine/world.js"></script>
+<script src="scripts/engine/loop.js"></script>
+
+<!-- ================= SYSTEMS ================= -->
 <script src="scripts/systems/birdMovementSystem.js"></script>
 <script src="scripts/systems/birdRenderSystems.js"></script>
 <script src="scripts/systems/weather.js"></script>
@@ -234,41 +245,14 @@ h1, h2 {
 <script src="scripts/systems/competition.js"></script>
 <script src="scripts/systems/birds.js"></script>
 
-<!-- ================= 5. ENGINE ================= -->
-<script src="scripts/engine/updater.js"></script>
-<script src="scripts/engine/world.js"></script>
-<script src="scripts/engine/loop.js"></script>
-
-<!-- ================= 6. UI ================= -->
+<!-- ================= UI ================= -->
 <script src="scripts/ui/components.js"></script>
-<script src="scripts/ui/ui.js"></script>
+<script src="scripts/ui/navigation.js"></script>
 <script src="scripts/ui/render.js"></script>
+<script src="scripts/ui/ui.js"></script>
 
-<!-- ================= 7. INIT ================= -->
+<!-- ================= INIT ================= -->
 <script src="scripts/init.js"></script>
-
-<!-- ================= 8. START SAFE BOOT ================= -->
-<script>
-  function bootGame() {
-    if (!window.game) {
-      console.warn("Waiting for game...");
-      setTimeout(bootGame, 50);
-      return;
-    }
-
-    if (!window.startEngine) {
-      console.warn("Engine not ready...");
-      setTimeout(bootGame, 50);
-      return;
-    }
-
-    console.log("🚀 GAME STARTING SAFE MODE");
-    startEngine();
-  }
-
-  window.addEventListener("load", bootGame);
-
-</script>
 
 </body>
 

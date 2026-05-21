@@ -14,12 +14,15 @@ function birdMovementSystem(dt) {
 
     anim.wingPhase = (anim.wingPhase || 0) + 0.25;
 
-    anim.frameTimer = (anim.frameTimer || 0) + 1;
+    anim.frameTimer += dt;
 
-    if (anim.frameTimer >= anim.frameSpeed) {
-      anim.frame = (anim.frame + 1) % 4;
-      anim.frameTimer = 0;
-    }
+if (anim.frameTimer >= 0.12) {
+
+  anim.frame =
+    (anim.frame + 1) % 4;
+
+  anim.frameTimer = 0;
+}
 
     // simple AI drift
     if (Math.random() < 0.01) {

@@ -136,4 +136,16 @@ window.getSelectedBird = getSelectedBird;
 window.getBirdFromEntity = getBirdFromEntity;
 
 window.birdImg = new Image();
-window.birdImg.src = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Hawk_Silhouette.png";
+
+window.birdImg.crossOrigin = "anonymous";
+
+window.birdImg.src =
+  "https://i.imgur.com/6XKJQ3F.png";
+
+window.birdImg.onload = () => {
+  console.log("✅ Bird sprite loaded");
+};
+
+window.birdImg.onerror = () => {
+  console.error("❌ Bird sprite failed");
+};
