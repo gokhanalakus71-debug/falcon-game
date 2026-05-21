@@ -1,6 +1,13 @@
+// ===================== BIRD FACTORY (ECS - OPTION A) =====================
+
 function createBird(data = {}) {
 
   const entity = createEntity();
+
+  if (entity == null) {
+    console.error("Failed to create entity");
+    return null;
+  }
 
   // =====================
   // POSITION
@@ -30,7 +37,7 @@ function createBird(data = {}) {
   });
 
   // =====================
-  // CONDITION (FIXED FLAT STRUCTURE)
+  // CONDITION (ECS STRUCTURED - OPTION A)
   // =====================
   addComponent(entity, "condition", {
     value: data.condition ?? 100,
@@ -66,6 +73,11 @@ function createBird(data = {}) {
     frameSpeed: 8,
     wingPhase: Math.random() * 10
   });
+
+  // =====================
+  // DEBUG
+  // =====================
+  console.log("🐦 Bird created (ECS entity):", entity);
 
   // =====================
   // CRITICAL FIX
