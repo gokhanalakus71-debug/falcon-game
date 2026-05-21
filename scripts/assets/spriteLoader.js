@@ -1,27 +1,43 @@
 console.log("🔥 SPRITE LOADER START");
 
+// ================= SPRITE STORAGE =================
+
 window.SPRITES = {
   bird: {
     sheet: new Image(),
     loaded: false,
-    frameCount: 4,
+    frameCount: 1,
     frameWidth: 0,
     frameHeight: 0
   }
 };
 
-// Use ONLINE placeholder sprite (no local files needed)
+// ================= RELIABLE PUBLIC IMAGE =================
+
+// transparent PNG silhouette
 window.SPRITES.bird.sheet.src =
-  "https://i.imgur.com/6XKJQ3F.png"; // simple bird sprite sheet placeholder
+  "https://upload.wikimedia.org/wikipedia/commons/3/3f/Hawk_Silhouette.png";
+
+// ================= LOAD SUCCESS =================
 
 window.SPRITES.bird.sheet.onload = () => {
+
   const s = window.SPRITES.bird;
+
   s.loaded = true;
-  s.frameWidth = s.sheet.width / 4;
+  s.frameWidth = s.sheet.width;
   s.frameHeight = s.sheet.height;
 
-  console.log("✅ Sprite loaded");
+  console.log("✅ Bird sprite loaded");
 };
+
+// ================= LOAD FAILURE =================
+
+window.SPRITES.bird.sheet.onerror = () => {
+  console.error("❌ Bird sprite failed");
+};
+
+// ================= GETTER =================
 
 window.getSprite = function (key) {
   return window.SPRITES?.[key] || null;

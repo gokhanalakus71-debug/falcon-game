@@ -2,74 +2,49 @@
 
 function birdRenderSystem() {
 
-  const ctx = window.__ctx;
+  const ctx = window.worldCtx;
 
   if (!ctx) return;
 
-  const birdImg = window.birdImg;
+  const sprite = window.getSprite?.("bird");
 
-  if (
-    !birdImg ||
-    !birdImg.complete ||
-    birdImg.naturalWidth === 0
-  ) {
-    return;
-  }
+  if (!sprite || !sprite.loaded) return;
 
-  const entities =
-    getEntitiesWith(
-      "position",
-      "velocity",
-      "animation",
-      "bird"
-    );
+  const img = sprite.sheet;
+
+  const entities = getEntitiesWith(
+    "position",
+    "velocity",
+    "animation",
+    "bird"
+  );
 
   for (const e of entities) {
 
-    const pos =
-      getComponent(e, "position");
+    const pos = getComponent(e, "position");
+    const vel = getComponent(e, "velocity");
+    const anim = getComponent(e, "animation");
 
-    const vel =
-      getComponent(e, "velocity");
+    if (!pos || !vel || !anim) continue;
 
-    const anim =
-      getComponent(e, "animation");
-
-    if (!pos || !vel || !anim) {
-      continue;
-    }
-
-    const frameCount = 4;
-
-    const frameWidth =
-      birdImg.width / frameCount;
-
-    const frameHeight =
-      birdImg.height;
-
-    const size = 96;
+    const size = 120;
 
     ctx.save();
 
     ctx.translate(pos.x, pos.y);
 
-    // flip left/right
+    // face direction
     if (vel.vx < 0) {
       ctx.scale(-1, 1);
     }
 
+    // wing bob
+    const flap = Math.sin(anim.wingPhase || 0) * 6;
+
     ctx.drawImage(
-      birdImg,
-
-      anim.frame * frameWidth,
-      0,
-
-      frameWidth,
-      frameHeight,
-
+      img,
       -size / 2,
-      -size / 2,
-
+      -size / 2 + flap,
       size,
       size
     );
@@ -78,5 +53,6 @@ function birdRenderSystem() {
   }
 }
 
-window.birdRenderSystem =
-  birdRenderSystem;
+// ================= REGISTER =================
+
+window.birdRenderSystem = birdRenderSystem;

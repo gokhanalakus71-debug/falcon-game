@@ -134,18 +134,3 @@ window.floatText = floatText;
 window.login = login;
 window.getSelectedBird = getSelectedBird;
 window.getBirdFromEntity = getBirdFromEntity;
-
-window.birdImg = new Image();
-
-window.birdImg.crossOrigin = "anonymous";
-
-window.birdImg.src =
-  "https://i.imgur.com/6XKJQ3F.png";
-
-window.birdImg.onload = () => {
-  console.log("✅ Bird sprite loaded");
-};
-
-window.birdImg.onerror = () => {
-  console.error("❌ Bird sprite failed");
-};
