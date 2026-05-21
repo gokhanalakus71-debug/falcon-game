@@ -12,18 +12,16 @@ if (!window.__weatherIntervalStarted) {
   window.__weatherIntervalStarted = true;
 
   setInterval(() => {
-    if (!game || !game.weather) return;
+  if (!window.game?.weather) return;
 
-    const randomWeather =
-      weatherTypes[Math.floor(Math.random() * weatherTypes.length)];
+  const types = ["Sunny", "Windy", "Rainy", "Storm", "Foggy"];
 
-    game.weather.type = randomWeather;
-    game.weather.temperature = 20 + Math.floor(Math.random() * 15);
+  const random =
+    types[Math.floor(Math.random() * types.length)];
 
-    floatText(`🌦 Weather: ${randomWeather}`, "#60a5fa");
+  window.game.weather.type = random;
+}, 30000);
 
-    // safer: avoid full UI rerender spam in future scaling
-    renderUI();
+window.weatherSystem = weatherSystem;
 
-  }, 30000);
 }
