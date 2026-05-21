@@ -144,8 +144,8 @@ function renderBirds() {
     ctx.save();
 
     ctx.translate(
-      pos.x,
-      pos.y
+      pos.x - camera.x,
+      pos.y - camera.y
     );
 
     // flip direction

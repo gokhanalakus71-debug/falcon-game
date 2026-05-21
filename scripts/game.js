@@ -63,8 +63,8 @@ function login() {
 
     traits: ["Fast Learner"],
 
-    x: 100,
-    y: 200,
+    x: 2000,
+    y: 1200,
     vx: 2 + Math.random() * 2,
     vy: (Math.random() - 0.5) * 1.5
   });

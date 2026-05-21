@@ -18,11 +18,29 @@ function birdMovementSystem(dt) {
       vel.vy = (Math.random() - 0.5) * 3;
     }
 
-    // screen wrap
-    if (pos.x > window.innerWidth + 100) pos.x = -100;
-    if (pos.x < -100) pos.x = window.innerWidth + 100;
+    // ================= WORLD BOUNDS =================
 
-    if (pos.y > window.innerHeight) pos.y = 50;
-    if (pos.y < 0) pos.y = window.innerHeight - 50;
+    const WORLD_WIDTH = 5000;
+    const WORLD_HEIGHT = 3000;
+
+    if (pos.x < 0) {
+      pos.x = 0;
+      vel.vx *= -1;
+    }
+
+    if (pos.x > WORLD_WIDTH) {
+      pos.x = WORLD_WIDTH;
+      vel.vx *= -1;
+    }
+
+    if (pos.y < 0) {
+      pos.y = 0;
+      vel.vy *= -1;
+    }
+
+    if (pos.y > WORLD_HEIGHT) {
+      pos.y = WORLD_HEIGHT;
+      vel.vy *= -1;
+    }
   }
 }
