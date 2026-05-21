@@ -1,6 +1,6 @@
 // ================= CAMERA SYSTEM =================
 
-window.camera = {
+window.camera = window.camera || {
   x: 0,
   y: 0,
   zoom: 1,
@@ -10,29 +10,30 @@ window.camera = {
 
 function cameraSystem(dt) {
 
-  if (!window.game) return;
+  const game = window.game;
+  const camera = window.camera;
 
-  const selected =
-    game.birdEntities?.[game.selected];
+  if (!game) return;
 
+  const selected = game.birdEntities?.[game.selected];
   if (!selected) return;
 
-  const pos =
-    getComponent(selected, "position");
-
+  const pos = getComponent(selected, "position");
   if (!pos) return;
 
-  // smooth follow
-  camera.targetX =
-    pos.x - window.innerWidth / 2;
+  // ================= TARGET =================
 
-  camera.targetY =
-    pos.y - window.innerHeight / 2;
+  camera.targetX = pos.x - window.innerWidth / 2;
+  camera.targetY = pos.y - window.innerHeight / 2;
 
-  // lerp
-  camera.x +=
-    (camera.targetX - camera.x) * 4 * dt;
+  // ================= SMOOTH FOLLOW =================
 
-  camera.y +=
-    (camera.targetY - camera.y) * 4 * dt;
+  const speed = 6; // stable tuning value
+
+  camera.x += (camera.targetX - camera.x) * speed * dt;
+  camera.y += (camera.targetY - camera.y) * speed * dt;
 }
+
+// ================= EXPORT =================
+
+window.cameraSystem = cameraSystem;
