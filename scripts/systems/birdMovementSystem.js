@@ -1,28 +1,17 @@
 function birdMovementSystem(dt) {
-  const entities = getEntitiesWith("position", "velocity", "animation");
+  const entities = getEntitiesWith("position", "velocity", "sprite");
 
   for (const e of entities) {
 
     const pos = getComponent(e, "position");
     const vel = getComponent(e, "velocity");
-    const anim = getComponent(e, "animation");
+    const sprite = getComponent(e, "sprite");
 
     if (!pos || !vel || !anim) continue;
 
     pos.x += vel.vx * 60 * dt;
     pos.y += vel.vy * 60 * dt;
-
-    anim.wingPhase = (anim.wingPhase || 0) + 0.25;
-
-    anim.frameTimer += dt;
-
-if (anim.frameTimer >= 0.12) {
-
-  anim.frame =
-    (anim.frame + 1) % 4;
-
-  anim.frameTimer = 0;
-}
+    
 
     // simple AI drift
     if (Math.random() < 0.01) {

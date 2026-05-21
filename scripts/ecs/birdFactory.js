@@ -62,13 +62,15 @@ function createBird(data = {}) {
   });
 
   // =====================
-  // BIRD INFO
+  // SPRITE
   // =====================
 
-  addComponent(entity, "bird", {
-    name: data.name ?? "Falcon",
-    rarity: data.rarity ?? "Common"
+  addComponent(entity, "sprite", {
+    key: "bird",
+    frame: 0,
+    frameCount: 4,
+    frameTimer: 0,
+    frameSpeed: 8,
+    wingPhase: Math.random() * 10
   });
-
-  return entity;
 }
