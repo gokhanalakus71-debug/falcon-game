@@ -1,6 +1,9 @@
 // ================= WEATHER SYSTEM =================
 
-game.weather = game.weather || {
+// ensure game exists
+window.game = window.game || {};
+
+window.game.weather = window.game.weather || {
   type: "Sunny",
   temperature: 20
 };
@@ -12,16 +15,25 @@ if (!window.__weatherIntervalStarted) {
   window.__weatherIntervalStarted = true;
 
   setInterval(() => {
-  if (!window.game?.weather) return;
+    if (!window.game?.weather) return;
 
-  const types = ["Sunny", "Windy", "Rainy", "Storm", "Foggy"];
+    const random =
+      weatherTypes[Math.floor(Math.random() * weatherTypes.length)];
 
-  const random =
-    types[Math.floor(Math.random() * types.length)];
+    window.game.weather.type = random;
+    window.game.weather.temperature = 20 + Math.floor(Math.random() * 15);
 
-  window.game.weather.type = random;
-}, 30000);
-
-  window.weatherSystem = weatherSystem;
-
+    console.log("🌦 Weather changed:", random);
+  }, 30000);
 }
+
+// ================= ECS COMPATIBILITY WRAPPER =================
+// (IMPORTANT: prevents init.js crash)
+
+function weatherSystem(dt) {
+  // currently handled by interval system
+  // reserved for future ECS-based weather simulation
+}
+
+// export safely
+window.weatherSystem = weatherSystem;
