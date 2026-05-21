@@ -107,7 +107,8 @@ function startCompetition(level){
 
   }else{
 
-    player.condition -= 10;
+    const condition = getCondition(player);
+  if (condition) condition.value -= 10;
 
     floatText("💀 DEFEAT", "red");
   }
