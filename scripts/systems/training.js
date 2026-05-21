@@ -171,12 +171,34 @@ function feedBird(food) {
 // ===================== RECOVERY =====================
 
 setInterval(() => {
+
   if (window.scene !== "home") return;
 
-  (game.birdEntities || []).forEach(b => {
-    b.condition = clamp((b.condition ?? 100) + 0.05, 0, 100);
-    b.feedCount = Math.max(0, (b.feedCount || 0) - 1);
+  const entities = game.birdEntities || [];
+
+  entities.forEach(entity => {
+
+    const condition = getComponent(entity, "condition");
+    const feedCount = getComponent(entity, "feedCount");
+
+    // safety guards (CRITICAL)
+    if (condition == null) return;
+
+    // ================= UPDATE =================
+
+    setComponent(
+      entity,
+      "condition",
+      clamp(condition + 0.05, 0, 100)
+    );
+
+    setComponent(
+      entity,
+      "feedCount",
+      Math.max(0, (feedCount || 0) - 1)
+    );
   });
+
 }, 1000);
 
 // ===================== EFFECTS =====================
