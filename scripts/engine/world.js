@@ -32,6 +32,30 @@ resizeWorld();
 
 window.addEventListener("resize", resizeWorld);
 
+// ================= SKY RENDER =================
+
+function renderSky() {
+
+  if (!ctx) return;
+
+  const g = ctx.createLinearGradient(
+    0, 0,
+    0, canvas.height
+  );
+
+  g.addColorStop(0, "#0b1020");
+  g.addColorStop(0.5, "#0f172a");
+  g.addColorStop(1, "#020617");
+
+  ctx.fillStyle = g;
+  ctx.fillRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+}
+
 // ================= BACKGROUND =================
 
 function renderBackground() {
@@ -90,6 +114,36 @@ function renderBackground() {
     );
   }
 }
+
+// ================= PARALLAX RENDER =================
+
+function renderParallax() {
+
+  if (!ctx || !window.camera) return;
+
+  const cam = window.camera;
+
+  for (const c of parallax.clouds) {
+
+    const x = c.x - cam.x * 0.3;
+    const y = c.y - cam.y * 0.1;
+
+    ctx.fillStyle = "rgba(255,255,255,0.08)";
+
+    ctx.beginPath();
+    ctx.ellipse(
+      x,
+      y,
+      c.size,
+      c.size * 0.6,
+      0,
+      0,
+      Math.PI * 2
+    );
+    ctx.fill();
+  }
+}
+
 
 // ================= BIRD RENDERER =================
 
@@ -186,11 +240,42 @@ function renderWorld() {
     canvas.height
   );
 
+  renderSky();
+  renderParallax();
   renderBackground();
-
-  // render ECS birds
   renderBirds();
+  renderFog();
+
+  window.__ctx = ctx;
 }
+
+// ================= DEPTH FOG =================
+
+function renderFog() {
+
+  if (!ctx) return;
+
+  const g = ctx.createRadialGradient(
+    canvas.width / 2,
+    canvas.height / 2,
+    200,
+    canvas.width / 2,
+    canvas.height / 2,
+    900
+  );
+
+  g.addColorStop(0, "rgba(255,255,255,0)");
+  g.addColorStop(1, "rgba(0,0,0,0.35)");
+
+  ctx.fillStyle = g;
+  ctx.fillRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+}
+
 
 // ================= EXPORT =================
 

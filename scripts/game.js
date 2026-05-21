@@ -134,3 +134,9 @@ window.floatText = floatText;
 window.login = login;
 window.getSelectedBird = getSelectedBird;
 window.getBirdFromEntity = getBirdFromEntity;
+
+window.addEventListener("load", () => {
+  if (typeof initParallax === "function") {
+    initParallax();
+  }
+});

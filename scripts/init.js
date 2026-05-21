@@ -3,6 +3,8 @@ window.addEventListener("load", () => {
   console.log("🚀 Registering systems");
 
   registerSystem(cameraSystem);
+
+  registerSystem(parallaxSystem);
   
   registerSystem(birdMovementSystem);
 
