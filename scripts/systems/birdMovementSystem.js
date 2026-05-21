@@ -23,6 +23,11 @@ function birdMovementSystem(dt) {
       vel.vy += (Math.random() - 0.5) * 0.5;
     }
 
+    const maxSpeed = 5;
+
+    vel.vx = Math.max(-maxSpeed, Math.min(maxSpeed, vel.vx));
+    vel.vy = Math.max(-maxSpeed, Math.min(maxSpeed, vel.vy));
+  
     // ================= WORLD BOUNDS =================
 
     const WORLD_WIDTH = 5000;
