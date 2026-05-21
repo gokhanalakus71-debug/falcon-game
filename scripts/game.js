@@ -140,3 +140,15 @@ window.addEventListener("load", () => {
     initParallax();
   }
 });
+
+window.addEventListener("load", () => {
+
+  setTimeout(() => {
+
+    if (typeof renderUI === "function") {
+      window.scene = "login";
+      renderUI();
+    }
+
+  }, 50);
+});

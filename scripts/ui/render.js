@@ -3,54 +3,43 @@
 function renderUI() {
   const app = document.getElementById("ui");
 
-  // HARD SAFETY GUARD (prevents crash if DOM not ready)
-  if (!app) return;
-
-  // HARD SAFETY: ensure scene exists
-  const currentScene = window.scene || "login";
-
-  // fallback render function safety
-  const safeCall = (fn) => (typeof fn === "function" ? fn() : "");
-
-  let html = "";
-
-  switch (currentScene) {
-
-    case "login":
-      html = safeCall(window.renderLogin);
-      break;
-
-    case "home":
-      html = safeCall(window.renderHome);
-      break;
-
-    case "birds":
-      html = safeCall(window.renderBirds);
-      break;
-
-    case "training":
-      html = safeCall(window.renderTraining);
-      break;
-
-    case "feeding":
-      html = safeCall(window.renderFeeding);
-      break;
-
-    case "breeding":
-      html = safeCall(window.renderBreeding);
-      break;
-
-    case "competition":
-      html = safeCall(window.renderCompetition);
-      break;
-
-    default:
-      html = safeCall(window.renderHome);
-      break;
+  if (!app) {
+    console.error("UI root missing");
+    return;
   }
 
-  app.innerHTML = html;
+  try {
+
+    const currentScene = window.scene || "login";
+
+    let html = "";
+
+    switch (currentScene) {
+      case "login":
+        html = window.renderLogin?.() || "<h1>Login missing</h1>";
+        break;
+
+      case "home":
+        html = window.renderHome?.() || "<h1>Home missing</h1>";
+        break;
+
+      case "birds":
+        html = window.renderBirds?.() || "<h1>Birds missing</h1>";
+        break;
+
+      default:
+        html = window.renderHome?.() || "<h1>Fallback</h1>";
+    }
+
+    app.innerHTML = html;
+
+  } catch (e) {
+    console.error("UI CRASH RECOVERED:", e);
+    app.innerHTML = "<h1>UI ERROR - CHECK CONSOLE</h1>";
+  }
 }
+
+window.renderUI = renderUI;
 
 // ================= GLOBAL EXPORT =================
 
