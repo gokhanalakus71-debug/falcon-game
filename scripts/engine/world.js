@@ -3,16 +3,20 @@
 const canvas = document.getElementById("world");
 const ctx = canvas?.getContext?.("2d");
 
+// ================= SAFETY =================
+
 if (!canvas) {
-  console.error("Canvas #world missing");
+  console.error("❌ Canvas #world missing");
 }
 
 if (!ctx) {
-  console.error("Canvas context failed");
+  console.error("❌ Canvas context failed");
 }
 
-window.worldCanvas = canvas;
-window.worldCtx = ctx;
+// ================= GLOBAL EXPORTS =================
+
+window.worldCanvas = canvas || null;
+window.worldCtx = ctx || null;
 
 // ================= RESIZE =================
 
@@ -48,6 +52,7 @@ function renderBackground() {
 
   // fallback background
   ctx.fillStyle = "#0f172a";
+
   ctx.fillRect(
     0,
     0,
@@ -55,11 +60,13 @@ function renderBackground() {
     canvas.height
   );
 
+  // optional asset background
   if (
     bg &&
     bg.complete &&
     bg.naturalWidth > 0
   ) {
+
     ctx.drawImage(
       bg,
       0,
@@ -84,11 +91,93 @@ function renderBackground() {
   }
 }
 
+// ================= BIRD RENDERER =================
+
+function renderBirds() {
+
+  if (!ctx) return;
+
+  const spriteData =
+    window.getSprite?.("bird");
+
+  if (
+    !spriteData ||
+    !spriteData.loaded ||
+    !spriteData.sheet
+  ) {
+    return;
+  }
+
+  const birdSheet = spriteData.sheet;
+
+  const entities =
+    getEntitiesWith(
+      "position",
+      "velocity",
+      "sprite",
+      "bird"
+    );
+
+  for (const e of entities) {
+
+    const pos =
+      getComponent(e, "position");
+
+    const vel =
+      getComponent(e, "velocity");
+
+    const sprite =
+      getComponent(e, "sprite");
+
+    if (!pos || !sprite) continue;
+
+    const frameWidth =
+      spriteData.frameWidth;
+
+    const frameHeight =
+      spriteData.frameHeight;
+
+    const size =
+      90 +
+      Math.sin(sprite.wingPhase || 0) * 10;
+
+    ctx.save();
+
+    ctx.translate(
+      pos.x,
+      pos.y
+    );
+
+    // flip direction
+    if (vel?.vx < 0) {
+      ctx.scale(-1, 1);
+    }
+
+    ctx.drawImage(
+      birdSheet,
+
+      // source
+      sprite.frame * frameWidth,
+      0,
+      frameWidth,
+      frameHeight,
+
+      // destination
+      -size / 2,
+      -size / 2,
+      size,
+      size
+    );
+
+    ctx.restore();
+  }
+}
+
 // ================= MAIN RENDER =================
 
 function renderWorld() {
 
-  if (!ctx) return;
+  if (!ctx || !canvas) return;
 
   ctx.clearRect(
     0,
@@ -99,8 +188,10 @@ function renderWorld() {
 
   renderBackground();
 
-  // expose ctx to render systems
-  window.__ctx = ctx;
+  // render ECS birds
+  renderBirds();
 }
+
+// ================= EXPORT =================
 
 window.renderWorld = renderWorld;
