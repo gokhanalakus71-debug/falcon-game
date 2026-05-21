@@ -1,55 +1,35 @@
-const TRAIT_EFFECTS = {
-  "Fast Learner": {
-    trainingGain: 1.5,
-    injuryIncrease: 1.1
-  },
-
-  "Showstopper": {
-    competitionScore: 1.2,
-    injuryIncrease: 1.2
-  },
-
-  "Resilient": {
-    injuryReduction: 0.5
-  },
-
-  "Fragile": {
-    injuryIncrease: 1.5
-  },
-
-  "Charming": {
-    charmBonus: 1.5,
-    injuryReduction: 0.9
-  }
-};
-
-const RARE_TRAITS = [
-  "Fast Learner",
-  "Showstopper",
-  "Resilient",
-  "Fragile",
-  "Charming"
-];
-
-// ===================== TRAINING =====================
+// ===================== TRAINING SYSTEM (ECS CLEAN VERSION) =====================
 
 function trainBird(stat, type) {
-  const b = game.birdEntities?.[game.selected];
 
-  if (!b) {
+  const entity = game.birdEntities?.[game.selected];
+
+  if (!entity) {
     floatText("Select a bird first", "orange");
     return;
   }
 
-  if (typeof b[stat] !== "number") return;
+  const stats = getComponent(entity, "stats");
+  const condition = getComponent(entity, "condition");
+
+  if (!stats || !condition) return;
+
+  // ===================== SAFETY =====================
+
+  if (typeof stats[stat] !== "number") return;
+
+  // ===================== BASE VALUES =====================
 
   let gain = type === "short" ? 1 : 3;
   let injuryRisk = type === "short" ? 0.05 : 0.25;
 
-  if (type === "short") b.condition -= 3;
-  if (type === "intensive") b.condition -= 10;
+  // ===================== CONDITION (ECS SAFE) =====================
 
-  // WEATHER
+  if (type === "short") condition.value -= 3;
+  if (type === "intensive") condition.value -= 10;
+
+  // ===================== WEATHER =====================
+
   if (game.weather?.type === "Storm") {
     injuryRisk += 0.1;
   }
@@ -59,47 +39,66 @@ function trainBird(stat, type) {
     floatText("🌪 Wind Boost", "#60a5fa");
   }
 
-  // TRAITS
-  gain *= getTraitValue(b, "trainingGain", 1);
-  b[stat] += gain;
+  // ===================== TRAITS =====================
 
-  const injuryIncrease = getTraitValue(b, "injuryIncrease", 1);
-  const injuryReduction = getTraitValue(b, "injuryReduction", 1);
+  gain *= getTraitValue(entity, "trainingGain", 1);
+
+  const injuryIncrease = getTraitValue(entity, "injuryIncrease", 1);
+  const injuryReduction = getTraitValue(entity, "injuryReduction", 1);
   const injuryModifier = injuryIncrease * injuryReduction;
 
+  // ===================== APPLY TRAINING =====================
+
+  stats[stat] += gain;
+
+  // ===================== INJURY CHECK =====================
+
   if (Math.random() < injuryRisk * injuryModifier) {
-    b.condition -= 15;
+
+    condition.value -= 15;
+
     flashScreen("red");
     floatText("🤕 INJURED!", "red");
-    b.agility = Math.max(1, b.agility - 1);
+
+    stats.agility = Math.max(1, stats.agility - 1);
+
   } else {
+
     flashScreen("green");
     floatText("+" + stat.toUpperCase(), "#22c55e");
   }
 
-  if (b.condition < 20) {
-    b.stamina = Math.max(1, b.stamina - 1);
+  // ===================== EXHAUSTION =====================
+
+  if (condition.value < 20) {
+    stats.stamina = Math.max(1, stats.stamina - 1);
     floatText("EXHAUSTED", "orange");
   }
 
-  // LIMITS
-  b.condition = clamp(b.condition, 0, 100);
+  // ===================== CLAMP =====================
 
-  b.strength = Math.max(1, b.strength);
-  b.agility = Math.max(1, b.agility);
-  b.stamina = Math.max(1, b.stamina);
-  b.intelligence = Math.max(1, b.intelligence);
-  b.charm = Math.max(1, b.charm);
+  condition.value = clamp(condition.value, 0, 100);
+
+  stats.strength = Math.max(1, stats.strength);
+  stats.agility = Math.max(1, stats.agility);
+  stats.stamina = Math.max(1, stats.stamina);
+  stats.intelligence = Math.max(1, stats.intelligence);
+  stats.charm = Math.max(1, stats.charm);
 
   renderUI();
 }
 
 // ===================== TRAITS =====================
 
-function getTraitValue(b, key, base = 1) {
+function getTraitValue(entity, key, base = 1) {
+
   let value = base;
 
-  (b.traits || []).forEach(t => {
+  const traits = getComponent(entity, "traits");
+
+  if (!traits?.list) return value;
+
+  traits.list.forEach(t => {
     if (TRAIT_EFFECTS[t]?.[key]) {
       value *= TRAIT_EFFECTS[t][key];
     }
@@ -108,67 +107,82 @@ function getTraitValue(b, key, base = 1) {
   return value;
 }
 
-// ===================== FEEDING =====================
+// ===================== FEEDING (ECS FIXED) =====================
 
 function feedBird(food) {
-  const b = game.birdEntities?.[game.selected];
 
-  if (!b) {
+  const entity = game.birdEntities?.[game.selected];
+
+  if (!entity) {
     floatText("Select a bird first", "orange");
     return;
   }
 
-  b.feedCount = (b.feedCount || 0) + 1;
+  const stats = getComponent(entity, "stats");
+  const condition = getComponent(entity, "condition");
+  const traits = getComponent(entity, "traits");
+
+  if (!stats || !condition) return;
+
+  condition.feedCount += 1;
+
+  // ===================== FOOD EFFECTS =====================
 
   if (game.weather?.type === "Storm" && food === "protein") {
-    b.stamina += 1;
+    stats.stamina += 1;
     floatText("⚡ Storm Energy", "#60a5fa");
   }
 
   if (food === "protein") {
-    b.strength += 1;
+    stats.strength += 1;
     floatText("+STRENGTH", "#ef4444");
   }
 
   if (food === "seeds") {
-    b.stamina += 1;
+    stats.stamina += 1;
     floatText("+STAMINA", "#22c55e");
   }
 
   if (food === "fruits") {
-    const bonus = (b.traits || []).includes("Charming") ? 2 : 1;
-    b.charm += bonus;
+    const bonus = traits?.list?.includes("Charming") ? 2 : 1;
+    stats.charm += bonus;
     floatText("+CHARM", "#f59e0b");
   }
 
-  if (b.feedCount > 5) {
-    b.condition -= 10;
+  // ===================== OVERFEED =====================
+
+  if (condition.feedCount > 5) {
+    condition.value -= 10;
     flashScreen("red");
     floatText("OVERFED!", "red");
   }
 
-  if (food === "protein" && b.strength > b.stamina + 10) {
-    b.agility -= 1;
+  // ===================== BALANCE PENALTIES =====================
+
+  if (food === "protein" && stats.strength > stats.stamina + 10) {
+    stats.agility -= 1;
     floatText("HEAVY BODY", "orange");
   }
 
-  if (food === "fruits" && b.charm > 15) {
-    b.intelligence -= 1;
+  if (food === "fruits" && stats.charm > 15) {
+    stats.intelligence -= 1;
     floatText("SPOILED", "pink");
   }
 
-  // LIMITS
-  b.condition = clamp(b.condition, 0, 100);
-  b.strength = Math.max(1, b.strength);
-  b.agility = Math.max(1, b.agility);
-  b.stamina = Math.max(1, b.stamina);
-  b.intelligence = Math.max(1, b.intelligence);
-  b.charm = Math.max(1, b.charm);
+  // ===================== CLAMP =====================
+
+  condition.value = clamp(condition.value, 0, 100);
+
+  stats.strength = Math.max(1, stats.strength);
+  stats.agility = Math.max(1, stats.agility);
+  stats.stamina = Math.max(1, stats.stamina);
+  stats.intelligence = Math.max(1, stats.intelligence);
+  stats.charm = Math.max(1, stats.charm);
 
   renderUI();
 }
 
-// ===================== RECOVERY =====================
+// ===================== RECOVERY (ECS FIXED) =====================
 
 setInterval(() => {
 
@@ -179,29 +193,16 @@ setInterval(() => {
   entities.forEach(entity => {
 
     const condition = getComponent(entity, "condition");
-    const feedCount = getComponent(entity, "feedCount");
 
-    // safety guards (CRITICAL)
-    if (condition == null) return;
+    if (!condition) return;
 
-    // ================= UPDATE =================
-
-    setComponent(
-      entity,
-      "condition",
-      clamp(condition + 0.05, 0, 100)
-    );
-
-    setComponent(
-      entity,
-      "feedCount",
-      Math.max(0, (feedCount || 0) - 1)
-    );
+    condition.value = clamp(condition.value + 0.05, 0, 100);
+    condition.feedCount = Math.max(0, condition.feedCount - 1);
   });
 
 }, 1000);
 
-// ===================== EFFECTS =====================
+// ===================== UTIL =====================
 
 function flashScreen(color) {
   const div = document.createElement("div");
@@ -216,24 +217,21 @@ function flashScreen(color) {
   setTimeout(() => div.remove(), 150);
 }
 
-// ===================== RISK PREVIEW =====================
+function getInjuryRiskPreview(entity, type = "short") {
 
-function getInjuryRiskPreview(b, type = "short") {
   let injuryRisk = type === "short" ? 0.05 : 0.25;
 
   if (game.weather?.type === "Storm") {
     injuryRisk += 0.1;
   }
 
-  const injuryIncrease = getTraitValue(b, "injuryIncrease", 1);
-  const injuryReduction = getTraitValue(b, "injuryReduction", 1);
+  const injuryIncrease = getTraitValue(entity, "injuryIncrease", 1);
+  const injuryReduction = getTraitValue(entity, "injuryReduction", 1);
 
-  injuryRisk *= injuryIncrease * injuryReduction;
-
-  return Math.min(1, injuryRisk);
+  return Math.min(1, injuryRisk * injuryIncrease * injuryReduction);
 }
 
-// ===================== UTILITY =====================
+// ===================== CLAMP =====================
 
 function clamp(v, min, max) {
   return Math.max(min, Math.min(max, v));
