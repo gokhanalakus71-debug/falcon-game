@@ -30,8 +30,10 @@ function birdMovementSystem(dt) {
   
     // ================= WORLD BOUNDS =================
 
-    const WORLD_WIDTH = 5000;
-    const WORLD_HEIGHT = 3000;
+    window.WORLD = window.WORLD || {
+      width: 5000,
+      height: 3000
+    };
 
     if (pos.x < 0) {
       pos.x = 0;
