@@ -192,8 +192,8 @@ function renderBirds() {
       spriteData.frameHeight;
 
     const size =
-      90 +
-      Math.sin(sprite.wingPhase || 0) * 10;
+      180 +
+      Math.sin(sprite.wingPhase || 0) * 20;
 
     ctx.save();
 
@@ -201,6 +201,22 @@ function renderBirds() {
       pos.x - camera.x,
       pos.y - camera.y
     );
+
+    // DEBUG POSITION DOT
+
+    ctx.fillStyle = "red";
+
+    ctx.beginPath();
+
+    ctx.arc(
+      0,
+      0,
+      8,
+      0,
+      Math.PI * 2
+    );
+
+ctx.fill();
 
     // flip direction
     if (vel?.vx < 0) {
