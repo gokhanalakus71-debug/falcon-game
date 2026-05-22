@@ -51,6 +51,15 @@ function createBird(data = {}) {
     list: data.traits ?? []
   });
 
+  // ===================== 
+  // BIRD INFO
+  // =====================
+
+  addComponent(entity, "bird", {
+    name: data.name ?? "Falcon",
+    rarity: data.rarity ?? "Common"
+  });
+
   // =====================
   // ANIMATION
   // =====================
