@@ -2,50 +2,53 @@
 
 window.SYSTEMS = window.SYSTEMS || [];
 
+// ================= DEBUG =================
+
+function logSystemList() {
+  console.log("🧩 SYSTEMS ACTIVE:", window.SYSTEMS.length);
+}
+
 // ================= REGISTER SYSTEM =================
 
 function registerSystem(system) {
+
   if (typeof system !== "function") {
-    console.warn("⚠️ Invalid system registered:", system);
+    console.warn("⚠️ Tried to register invalid system:", system);
     return;
   }
 
   window.SYSTEMS.push(system);
 
-  console.log("🧩 System registered. Total:", window.SYSTEMS.length);
+  console.log(
+    "🧩 System registered. Total:",
+    window.SYSTEMS.length
+  );
 }
 
 // ================= UPDATE SYSTEMS =================
 
 function updateSystems(dt) {
 
-  // 🔥 ENGINE HEARTBEAT (CRITICAL DEBUG)
-  console.log("⚙️ ENGINE TICK | systems:", window.SYSTEMS.length);
-
-  if (!window.SYSTEMS.length) {
-    console.warn("❌ No systems registered");
+  if (!window.SYSTEMS || window.SYSTEMS.length === 0) {
     return;
   }
 
   for (const sys of window.SYSTEMS) {
+
+    if (typeof sys !== "function") continue;
+
     try {
       sys(dt);
     } catch (err) {
-      console.error("❌ System crash:", err);
+      console.error("❌ System error in:", sys.name, err);
     }
   }
 }
 
-// ================= SYSTEM INSPECTOR =================
+// ================= DEV HOOK =================
 
-window.debugSystems = function () {
-  console.log("===== SYSTEM DEBUG =====");
-  console.log("Total systems:", window.SYSTEMS.length);
-  console.table(window.SYSTEMS.map((s, i) => ({
-    index: i,
-    name: s.name || "anonymous"
-  })));
-};
+// expose for debugging in console
+window.logSystemList = logSystemList;
 
 // ================= EXPORT =================
 
