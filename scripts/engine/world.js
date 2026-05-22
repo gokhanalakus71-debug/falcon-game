@@ -21,7 +21,6 @@ window.worldCtx = ctx || null;
 // ================= RESIZE =================
 
 function resizeWorld() {
-
   if (!canvas) return;
 
   canvas.width = window.innerWidth;
@@ -29,13 +28,11 @@ function resizeWorld() {
 }
 
 resizeWorld();
-
 window.addEventListener("resize", resizeWorld);
 
-// ================= SKY RENDER =================
+// ================= SKY =================
 
 function renderSky() {
-
   if (!ctx) return;
 
   const g = ctx.createLinearGradient(
@@ -43,157 +40,91 @@ function renderSky() {
     0, canvas.height
   );
 
-  g.addColorStop(0, "#0b1020");
-  g.addColorStop(0.5, "#0f172a");
-  g.addColorStop(1, "#020617");
+  g.addColorStop(0, "#1e3a8a");
+  g.addColorStop(0.5, "#0ea5e9");
+  g.addColorStop(1, "#0f172a");
 
   ctx.fillStyle = g;
-  ctx.fillRect(
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 // ================= BACKGROUND =================
 
 function renderBackground() {
-
   if (!ctx || !window.game) return;
 
   const weather =
     window.game.weather?.type || "Sunny";
 
   let bgKey = "sunny";
-
   if (weather === "Rainy") bgKey = "rainy";
   if (weather === "Storm") bgKey = "storm";
   if (weather === "Foggy") bgKey = "foggy";
 
-  const bg =
-    window.getAsset?.("background", bgKey);
+  const bg = window.getAsset?.("background", bgKey);
 
-  // fallback background
+  // fallback base
   ctx.fillStyle = "#0f172a";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillRect(
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
-
-  // optional asset background
-  if (
-    bg &&
-    bg.complete &&
-    bg.naturalWidth > 0
-  ) {
-
-    ctx.drawImage(
-      bg,
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
+  // optional asset
+  if (bg && bg.complete && bg.naturalWidth > 0) {
+    ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
   }
 
   // fog overlay
   if (weather === "Foggy") {
-
-    ctx.fillStyle =
-      "rgba(255,255,255,0.05)";
-
-    ctx.fillRect(
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
+    ctx.fillStyle = "rgba(255,255,255,0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 }
 
-// ================= PARALLAX RENDER =================
+// ================= PARALLAX =================
 
 function renderParallax() {
-
-  if (!ctx || !window.camera) return;
+  if (!ctx || !window.camera || !window.parallax) return;
 
   const cam = window.camera;
 
-  for (const c of parallax.clouds) {
-
+  for (const c of window.parallax.clouds) {
     const x = c.x - cam.x * 0.3;
     const y = c.y - cam.y * 0.1;
 
     ctx.fillStyle = "rgba(255,255,255,0.08)";
-
     ctx.beginPath();
-    ctx.ellipse(
-      x,
-      y,
-      c.size,
-      c.size * 0.6,
-      0,
-      0,
-      Math.PI * 2
-    );
+    ctx.ellipse(x, y, c.size, c.size * 0.6, 0, 0, Math.PI * 2);
     ctx.fill();
   }
 }
 
-
-// ================= BIRD RENDERER =================
+// ================= BIRDS =================
 
 function renderBirds() {
+  if (!ctx || !window.game) return;
 
-  if (!ctx) return;
-
-  const spriteData =
-    window.getSprite?.("bird");
-
-  if (
-    !spriteData ||
-    !spriteData.loaded ||
-    !spriteData.sheet
-  ) {
-    return;
-  }
+  const spriteData = window.getSprite?.("bird");
+  if (!spriteData || !spriteData.sheet) return;
 
   const birdSheet = spriteData.sheet;
 
   const entities =
-    getEntitiesWith(
-      "position",
-      "velocity",
-      "sprite",
-      "bird"
-    );
+    window.getEntitiesWith?.("position", "velocity", "sprite");
+
+  if (!entities) return;
 
   for (const e of entities) {
-
-    const pos =
-      getComponent(e, "position");
-
-    const vel =
-      getComponent(e, "velocity");
-
-    const sprite =
-      getComponent(e, "sprite");
+    const pos = getComponent(e, "position");
+    const vel = getComponent(e, "velocity");
+    const sprite = getComponent(e, "sprite");
 
     if (!pos || !sprite) continue;
 
-    const frameWidth =
-      spriteData.frameWidth;
+    const camera = window.camera || { x: 0, y: 0 };
 
-    const frameHeight =
-      spriteData.frameHeight;
+    const frameWidth = spriteData.frameWidth || 128;
+    const frameHeight = spriteData.frameHeight || 128;
 
-    const size =
-      180 +
-      Math.sin(sprite.wingPhase || 0) * 20;
+    const size = 160 + Math.sin(sprite.wingPhase || 0) * 15;
 
     ctx.save();
 
@@ -202,21 +133,11 @@ function renderBirds() {
       pos.y - camera.y
     );
 
-    // DEBUG POSITION DOT
-
+    // debug dot (center position)
     ctx.fillStyle = "red";
-
     ctx.beginPath();
-
-    ctx.arc(
-      0,
-      0,
-      8,
-      0,
-      Math.PI * 2
-    );
-
-ctx.fill();
+    ctx.arc(0, 0, 6, 0, Math.PI * 2);
+    ctx.fill();
 
     // flip direction
     if (vel?.vx < 0) {
@@ -225,14 +146,10 @@ ctx.fill();
 
     ctx.drawImage(
       birdSheet,
-
-      // source
-      sprite.frame * frameWidth,
+      0,
       0,
       frameWidth,
       frameHeight,
-
-      // destination
       -size / 2,
       -size / 2,
       size,
@@ -243,32 +160,9 @@ ctx.fill();
   }
 }
 
-// ================= MAIN RENDER =================
-
-function renderWorld() {
-
-  if (!ctx || !canvas) return;
-
-  ctx.clearRect(
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
-
-  renderSky();
-  renderParallax();
-  renderBackground();
-  renderBirds();
-  renderFog();
-
-  window.__ctx = ctx;
-}
-
-// ================= DEPTH FOG =================
+// ================= FOG =================
 
 function renderFog() {
-
   if (!ctx) return;
 
   const g = ctx.createRadialGradient(
@@ -284,14 +178,24 @@ function renderFog() {
   g.addColorStop(1, "rgba(0,0,0,0.35)");
 
   ctx.fillStyle = g;
-  ctx.fillRect(
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
+// ================= WORLD RENDER =================
+
+function renderWorld() {
+  if (!ctx || !canvas) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  renderSky();
+  renderParallax();
+  renderBackground();
+  renderBirds();
+  renderFog();
+
+  window.__ctx = ctx;
+}
 
 // ================= EXPORT =================
 
