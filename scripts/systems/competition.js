@@ -1,128 +1,183 @@
-function startCompetition(level){
+// ================= COMPETITION SYSTEM (FULL ECS VERSION) =================
 
-  let player = game.birdEntities[game.selected];
+function startCompetition(level) {
 
-  if(!player){
+  // ================= GET ENTITY =================
+
+  const entity =
+    game.birdEntities?.[game.selected];
+
+  if (!entity) {
     alert("No bird selected");
     return;
   }
 
-  // =====================
-  // LEVEL DIFFICULTY
-  // =====================
+  // ================= ECS COMPONENTS =================
+
+  const stats =
+    getComponent(entity, "stats");
+
+  const traits =
+    getComponent(entity, "traits");
+
+  const condition =
+    getComponent(entity, "condition");
+
+  const bird =
+    getComponent(entity, "bird");
+
+  // ================= SAFETY =================
+
+  if (
+    !stats ||
+    !traits ||
+    !condition ||
+    !bird
+  ) {
+    console.error(
+      "Competition ECS data missing"
+    );
+    return;
+  }
+
+  // ================= LEVEL DIFFICULTY =================
 
   let difficulty = 20;
 
-  if(level === "local"){
-    difficulty = 20;
+  switch (level) {
+
+    case "local":
+      difficulty = 20;
+    break;
+
+    case "regional":
+      difficulty = 35;
+    break;
+
+    case "national":
+      difficulty = 50;
+    break;
+
+    default:
+      difficulty = 20;
+    break;
   }
 
-  if(level === "regional"){
-    difficulty = 35;
-  }
-
-  if(level === "national"){
-    difficulty = 50;
-  }
+  // ================= WEATHER BONUS =================
 
   let weatherBonus = 0;
 
-  if(
-  game.weather.type === "Windy" &&
-  player.traits.includes("Swift")
-  ){
-  weatherBonus += 8;
+  const traitList = traits.list || [];
+
+  if (
+    game.weather?.type === "Windy" &&
+    traitList.includes("Swift")
+  ) {
+    weatherBonus += 8;
   }
 
-  if(
-  game.weather.type === "Storm" &&
-  player.traits.includes("Hunter")
-  ){
-  weatherBonus += 6;
+  if (
+    game.weather?.type === "Storm" &&
+    traitList.includes("Hunter")
+  ) {
+    weatherBonus += 6;
   }
 
-  if(
-  game.weather.type === "Foggy" &&
-  player.intelligence > 10
-  ){
-  weatherBonus += 5;
+  if (
+    game.weather?.type === "Foggy" &&
+    stats.intelligence > 10
+  ) {
+    weatherBonus += 5;
   }
-  // =====================
-  // PERFORMANCE SCORE
-  // =====================
 
-  let randomness =
+  // ================= RANDOMNESS =================
+
+  const randomness =
     Math.floor(Math.random() * 20);
 
-  let traitBonus =
-  player.traits.includes("Showstopper")
-    ? 15
-    : player.traits.length * 2;
+  // ================= TRAIT BONUS =================
+
+  const traitBonus =
+    traitList.includes("Showstopper")
+      ? 15
+      : traitList.length * 2;
+
+  // ================= RARITY BONUS =================
 
   let rarityBonus = 0;
 
-  if(player.rarity === "Rare"){
+  if (bird.rarity === "Rare") {
     rarityBonus = 5;
   }
 
-  if(player.rarity === "Legendary"){
+  if (bird.rarity === "Legendary") {
     rarityBonus = 12;
   }
 
-  let score =
+  // ================= FINAL SCORE =================
 
-    (0.3 * player.strength) +
-    (0.2 * player.agility) +
-    (0.2 * player.intelligence) +
-    (0.2 * player.stamina) +
-    (0.1 * player.charm) +
+  const score =
+
+    (0.3 * stats.strength) +
+    (0.2 * stats.agility) +
+    (0.2 * stats.intelligence) +
+    (0.2 * stats.stamina) +
+    (0.1 * stats.charm) +
 
     randomness +
     traitBonus +
     rarityBonus +
     weatherBonus;
 
-  // =====================
-  // RESULTS
-  // =====================
+  // ================= RESULT =================
 
-  let result = "LOSE";
+  const result =
+    score >= difficulty
+      ? "WIN"
+      : "LOSE";
 
-  if(score >= difficulty){
-    result = "WIN";
+  // ================= APPLY RESULTS =================
+
+  if (result === "WIN") {
+
+    condition.value =
+      Math.max(0, condition.value - 5);
+
+    stats.charm += 1;
+
+    floatText(
+      "🏆 VICTORY!",
+      "#22c55e"
+    );
+
+  } else {
+
+    condition.value =
+      Math.max(0, condition.value - 10);
+
+    floatText(
+      "💀 DEFEAT",
+      "red"
+    );
   }
 
-  // =====================
-  // REWARDS
-  // =====================
+  // ================= CLAMP =================
 
-  if(result === "WIN"){
+  condition.value =
+    clamp(condition.value, 0, 100);
 
-    player.condition =
-      Math.max(0, player.condition - 5);
-
-    player.charm += 1;
-
-    floatText("🏆 VICTORY!", "#22c55e");
-
-  }else{
-
-    const condition = getCondition(player);
-  if (condition) condition.value -= 10;
-
-    floatText("💀 DEFEAT", "red");
-  }
-
-  // =====================
-  // SHOW RESULTS
-  // =====================
+  // ================= RESULT SCREEN =================
 
   alert(
 
-    "🏆 " + level.toUpperCase() +
+    "🏆 " +
+    level.toUpperCase() +
     " COMPETITION\n\n" +
 
-    "Score: " +
+    "Falcon: " +
+    bird.name +
+
+    "\n\nScore: " +
     score.toFixed(1) +
 
     "\nDifficulty: " +
@@ -132,5 +187,12 @@ function startCompetition(level){
     result
   );
 
+  // ================= UI REFRESH =================
+
   renderUI();
 }
+
+// ================= EXPORT =================
+
+window.startCompetition =
+  startCompetition;
